@@ -1,0 +1,6 @@
+[submodule "lab1"]
+	path = lab1
+	url = https://github.com/grappell/csc2001-lab1.git
+[submodule "lab2.1"]
+	path = lab2.1
+	url = https://github.com/grappell/csc2001-lab2.1.git
