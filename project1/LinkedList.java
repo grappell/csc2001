@@ -1,5 +1,6 @@
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.*;
 
@@ -167,7 +168,12 @@ public class LinkedList<T> {
      */
     public T remove(T item) {
 
-        if(!head.hasNext()) return null;
+        if(!head.hasNext()) {
+            var temp = head;
+            head = null;
+            length--;
+            return temp.getData();
+        }
 
         var previous = head;
         var current = head.getNext();
@@ -235,15 +241,13 @@ public class LinkedList<T> {
         return -1;
     }
 
-    public int getIndexBySpecific(Function<T, Boolean> specific) {
+    public Optional<Node<T>> getFirst(Function<T, Boolean> specific) {
         var current = head;
-        var index = 0;
         while (current != null) {
-            if(specific.apply(current.getData())) return index;
-            index++;
+            if(specific.apply(current.getData())) return Optional.of(current);
             current = current.getNext();
         }
-        return -1;
+        return Optional.empty();
     }
 
     public Node<T> at(int index) {

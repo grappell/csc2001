@@ -14,13 +14,13 @@ public class MainGUI extends JFrame {
     private JTextField maxField;
     private JTextArea outputArea;
 
-    private LinkedList<Session> sessions = new LinkedList<>();
+    private final LinkedList<Session> sessions = new LinkedList<>();
 
     public record FieldOutput(int sessionId, String title, String mentor, String department, String date, String time, String location, int maxParticipants) {}
 
     public MainGUI() {
         setTitle("Employee Mentorship and Inclusion Manager");
-        setSize(600, 600);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         createGUI();
@@ -65,15 +65,19 @@ public class MainGUI extends JFrame {
         JButton addButton = new JButton("Add Session");
         JButton displayButton = new JButton("Display");
         JButton searchButton = new JButton("Search");
+        JButton updateButton = new JButton("Update");
         JButton removeButton = new JButton("Remove");
         JButton registerButton = new JButton("Register");
+        JButton cancelButton = new JButton("Cancel");
         JButton exitButton = new JButton("Exit");
         // add Buttons
         buttonPanel.add(addButton);
         buttonPanel.add(displayButton);
         buttonPanel.add(searchButton);
+        buttonPanel.add(updateButton);
         buttonPanel.add(removeButton);
         buttonPanel.add(registerButton);
+        buttonPanel.add(cancelButton);
         buttonPanel.add(exitButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
@@ -83,7 +87,9 @@ public class MainGUI extends JFrame {
         displayButton.addActionListener(e -> displaySessions());
         searchButton.addActionListener(e -> searchSession());
         removeButton.addActionListener(e -> removeSession());
+        updateButton.addActionListener(e -> updateSession());
         registerButton.addActionListener(e -> registerParticipant());
+        cancelButton.addActionListener(e ->  cancelRegistration());
         exitButton.addActionListener(e -> System.exit(0));
     }
 
@@ -107,6 +113,7 @@ public class MainGUI extends JFrame {
         try {
 
             var session = new Session(getFields(true), "N/A");
+
             if(session.getSessionID() == 0 || sessions.getLength() == 0 || sessions.getFirst().getData().getSessionID() > session.getSessionID()) {
                 sessions.addFirst(session);
                 if(sessions.getLength() != 0) reorderSessions(session);
@@ -116,15 +123,13 @@ public class MainGUI extends JFrame {
             }
 
             sessions.insert(session, Comparator.comparingInt(Session::getSessionID));
-
             reorderSessions(session);
 
             outputArea.setText("Session Added Successfully\n");
             clearFields();
-        }
-        catch(Exception e) {
-            //noinspection CallToPrintStackTrace
-            e.printStackTrace();
+
+        } catch(Exception e) {
+            //e.printStackTrace();
             outputArea.setText("Invalid input");
         }
     }
@@ -143,37 +148,56 @@ public class MainGUI extends JFrame {
             bldr.append("\n");
         });
 
-        sessions.stream().forEach(System.out::println);
-
         outputArea.setText(bldr.toString());
 
     }
 
     // Search based on sessionID or mentor if the fields are not empty
     private void searchSession() {
-        /* TODO: 1) Search by sessionID, if field is empty,
-         print Session not found, in outputArea.
-        2) Search by mentor if the Mentor field is empty,
-         print No session found for mentor (mentor name) in outputArea
-        3) If both sessionID and mentor are empty,
-        print Please enter a Session ID or Mentor name in outputArea
-        */
+
+        var fields = getFields(false);
+
+        if(fields.sessionId() != Integer.MIN_VALUE) {
+            var session = sessions.getFirst(s -> s.getSessionID() == fields.sessionId());
+            if(session.isPresent()) outputArea.setText("Found the following session:\n  " + session.get().getData());
+            else outputArea.setText("Unable to find session with ID: " + fields.sessionId());
+        } else if (!fields.mentor().isEmpty()) {
+            var session = sessions.getFirst(s -> s.getMentor().equals(fields.mentor()));
+            if(session.isPresent()) outputArea.setText("Found the following session:\n  " + session.get().getData());
+            else outputArea.setText("Unable to find session with mentor: " + fields.mentor());
+        } else {
+            outputArea.setText("Please enter either a mentor name or session id");
+        }
         
+    }
+
+    private void updateSession() {
+        var fields = getFields(false);
+        var found = sessions.getFirst(s -> s.getSessionID() == fields.sessionId()).orElse(null);
+
+        if(found == null) {
+            outputArea.setText("Unable to find a session with ID: " + fields.sessionId());
+            return;
+        }
+
+        found.setData(new Session(fields, "N/A"));
+
+        outputArea.setText("Updated session with ID: " + fields.sessionId());
+        clearFields();
     }
     
     // delete the session
     private void removeSession() {
 
         var fields = getFields(false);
-        var session = sessions.getIndexBySpecific(s -> s.getSessionID() == fields.sessionId);
+        var first = sessions.getFirst(s -> s.getSessionID() == fields.sessionId()).orElse(null);
 
-        if(session == -1) {
-            outputArea.setText("Unable to find a session with that ID");
+        if(first == null) {
+            outputArea.setText("Unable to find a session with ID: " + fields.sessionId());
             return;
         }
 
-        var sessionS = sessions.at(session).getData();
-        var removed = sessions.remove(sessionS);
+        var removed = sessions.remove(first.getData());
 
         outputArea.setText("Removed session with ID: " + removed.getSessionID());
         clearFields();
@@ -182,10 +206,45 @@ public class MainGUI extends JFrame {
 
     // registerParticipants call the method in the LinkedList
     private void registerParticipant() {
-        /* TODO: It must call the registerParticipant() method of the LinkedList,
-        if result is True: print in outputArea, "Participant registered"
-        otherwise print, "Registration failed"
-        */
+
+        var fields = getFields(false);
+        var session = sessions.getFirst(s -> s.getSessionID() == fields.sessionId()).orElse(null);
+
+        if(session == null) {
+            outputArea.setText("Unable to find session with ID: " + fields.sessionId());
+            return;
+        }
+
+        var sessionData = session.getData();
+        var remainingSeats = sessionData.getMaxParticipants() - sessionData.getCurrentParticipants();
+
+        if(sessionData.getCurrentParticipants() < sessionData.getMaxParticipants() && remainingSeats > 0) {
+            sessionData.setCurrentParticipants(sessionData.getCurrentParticipants() + 1);
+            outputArea.setText("Participant Registered");
+        } else {
+            outputArea.setText("Registration Failed - Too many participants");
+        }
+    }
+
+    private void cancelRegistration() {
+
+        var fields = getFields(false);
+        var session = sessions.getFirst(s -> s.getSessionID() == fields.sessionId()).orElse(null);
+
+        if(session == null) {
+            outputArea.setText("Unable to find session with ID: " + fields.sessionId());
+            return;
+        }
+
+        var sessionData = session.getData();
+        var remainingSeats = sessionData.getMaxParticipants() - sessionData.getCurrentParticipants();
+
+        if(remainingSeats < sessionData.getMaxParticipants()) {
+            sessionData.setCurrentParticipants(sessionData.getCurrentParticipants() - 1);
+            outputArea.setText("Registration Canceled");
+        } else {
+            outputArea.setText("Cancellation Failed - No participants left to cancel");
+        }
     }
 
     private FieldOutput getFields(boolean enforceNotNull) {
@@ -217,12 +276,10 @@ public class MainGUI extends JFrame {
 
         while(curr.hasNext()) {
             var next = curr.getNext();
-
             if(next.getData().getSessionID() != occupied) break;
 
             occupied++;
             next.getData().setSessionID(occupied);
-
             curr = next;
         }
 
