@@ -15,7 +15,6 @@ public class MainGUI extends JFrame {
     private JTextArea outputArea;
 
     private final LinkedList<Session> sessions = new LinkedList<>();
-
     public record FieldOutput(int sessionId, String title, String mentor, String department, String date, String time, String location, int maxParticipants) {}
 
     public MainGUI() {
@@ -171,6 +170,7 @@ public class MainGUI extends JFrame {
         
     }
 
+    // Update a session with new details, based on ID
     private void updateSession() {
         var fields = getFields(false);
         var found = sessions.getFirst(s -> s.getSessionID() == fields.sessionId()).orElse(null);
@@ -226,6 +226,7 @@ public class MainGUI extends JFrame {
         }
     }
 
+    // Cancel a registration based on ID
     private void cancelRegistration() {
 
         var fields = getFields(false);
@@ -247,6 +248,8 @@ public class MainGUI extends JFrame {
         }
     }
 
+    // Grab all the fields in the text boxes and insert them into a record for easy access. EnforceNull will throw an error
+    // if the ID or maxParticipants is a empty value
     private FieldOutput getFields(boolean enforceNotNull) {
         return new FieldOutput(
             textParseInt(idField.getText(), enforceNotNull),
@@ -260,10 +263,15 @@ public class MainGUI extends JFrame {
         );
     }
 
+    // For empty values && enforceNull is false, return MIN_VALUE. For empty and enforce is true, will throw an error.
+    // For non-empty values, parse value into int
     private int textParseInt(String t, boolean enforceNotNull) {
         return !enforceNotNull && t.isEmpty() ? Integer.MIN_VALUE : Integer.parseInt(t);
     }
 
+    // Reorder the sessions so that no ids collide. Starting from the updated session, iteratively look to the right to see
+    // if ids conflict, and if so, increment the ID to the right. Take a step and repeat until the end of the list or a
+    // gap is reached.
     private void reorderSessions(Session updated) {
 
         var idx = sessions.getIndex(updated);

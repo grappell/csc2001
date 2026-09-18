@@ -241,6 +241,12 @@ public class LinkedList<T> {
         return -1;
     }
 
+    /**
+     * Get the first occurrence of a specific element based on a matching function.
+     *
+     * @param specific the function to compare each element. Takes in T and returns a boolean, setting it to true should an element match
+     * @return an optional containing the element, should it be found
+     */
     public Optional<Node<T>> getFirst(Function<T, Boolean> specific) {
         var current = head;
         while (current != null) {
@@ -250,6 +256,12 @@ public class LinkedList<T> {
         return Optional.empty();
     }
 
+    /**
+     * Get an element at a specific index
+     *
+     * @param index the index of the element to get
+     * @return the node at the specific index
+     */
     public Node<T> at(int index) {
         var curr = head;
         while(curr != null) {
