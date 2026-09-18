@@ -13,9 +13,9 @@ public class Main {
         var s4 = new Session(3, "topic4",  "mentor3", "dep4", "date4", "time4", "loc4", 100);
 
         ll.addFirst(s1);
-        ll.insert(s2, Comparator.comparingInt(Session::getSessionID));
         ll.addLast(s4);
         ll.insert(s3, Comparator.comparingInt(Session::getSessionID));
+        ll.insert(s2, Comparator.comparingInt(Session::getSessionID));
 
         out("\n --- Elements inserted out of order --- ");
         ll.stream().forEach(this::out);
