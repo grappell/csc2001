@@ -249,7 +249,7 @@ public class MainGUI extends JFrame {
     }
 
     // Grab all the fields in the text boxes and insert them into a record for easy access. EnforceNull will throw an error
-    // if the ID or maxParticipants is a empty value
+    // if the ID or maxParticipants is an empty value
     private FieldOutput getFields(boolean enforceNotNull) {
         return new FieldOutput(
             textParseInt(idField.getText(), enforceNotNull),
