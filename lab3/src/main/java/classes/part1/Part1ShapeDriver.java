@@ -35,16 +35,9 @@ public class Part1ShapeDriver {
     }
 
     public static double[] smallLarge(ArrayList<Double> li) {
-        final double[] large = {Integer.MIN_VALUE};
-        final double[] small = {Integer.MAX_VALUE};
-
-        li.forEach(e -> {
-            if(e > large[0]) large[0] = e;
-            if(e < small[0]) small[0] = e;
-        });
-
-        return new double[]{small[0], large[0]};
-
+        var min = li.stream().min(Double::compareTo).orElse(Double.MAX_VALUE);
+        var max = li.stream().max(Double::compareTo).orElse(Double.MIN_VALUE);
+        return new double[]{min, max};
     }
 
 }
