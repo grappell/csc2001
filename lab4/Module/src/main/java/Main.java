@@ -40,7 +40,7 @@ public class Main {
         arr.stream().forEach(Main::out);
 
         out(" -------- ");
-        var temp = new IntArray(List.of(5, 2, 80085, 3, 4));
+        var temp = new IntArray(List.of(5, 2, 80085, 3, 4, 10));
         out("Elts: " + arr.equalElts(temp));
         out("Equals: " + arr.equals(temp));
 

@@ -44,7 +44,7 @@ public class IntArray {
      * @param e the element to add to the end
      */
     public void addToEnd(int e) {
-        if(activeElementEnd + 1 == arr.length) {
+        if(activeElementEnd == arr.length) {
             var temp = getResizeAwareTemp();
             System.arraycopy(arr, 0, temp, 0, activeElementEnd);
             arr = temp;
@@ -60,7 +60,7 @@ public class IntArray {
      */
     public void insert(int index, int e) {
 
-        if (index < 0 || index >= activeElementEnd) {
+        if (index < 0 || index > activeElementEnd) {
             throw new IndexOutOfBoundsException();
         }
 
@@ -86,7 +86,7 @@ public class IntArray {
         }
 
         var res = arr[index];
-        System.arraycopy(arr, index + 1, arr, index, arr.length - index - 1);
+        System.arraycopy(arr, index + 1, arr, index, activeElementEnd - index - 1);
         activeElementEnd--;
         return res;
     }
@@ -137,10 +137,7 @@ public class IntArray {
      */
     public boolean equalElts(IntArray o) {
         var min = Math.min(activeElementEnd, o.activeElementEnd);
-        for(int i = 0; i < min; i++) {
-            if(get(i) != o.get(i)) return false;
-        }
-        return true;
+        return Arrays.equals(arr, 0, min, o.arr, 0, min);
     }
 
     /**
@@ -149,12 +146,12 @@ public class IntArray {
      * @return the IntStream
      */
     public IntStream stream() {
-        return Arrays.stream(arr);
+        return Arrays.stream(arr, 0, activeElementEnd);
     }
 
     /**
      * Get the length of the ArrayList
-     * Example: {1, 2, 3}.length() --> returns 4
+     * Example: {1, 2, 3}.length() --> returns 3
      * @return the length
      */
     public int length() {
@@ -162,7 +159,7 @@ public class IntArray {
     }
 
     private int[] getResizeAwareTemp() {
-        return new int[activeElementEnd + 1 == arr.length ? arr.length * 2 : arr.length];
+        return new int[activeElementEnd == arr.length ? arr.length * 2 : arr.length];
     }
 
     /**
@@ -174,7 +171,7 @@ public class IntArray {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         IntArray intArray = (IntArray) o;
-        return activeElementEnd == intArray.activeElementEnd && Objects.deepEquals(arr, intArray.arr);
+        return activeElementEnd == intArray.activeElementEnd && equalElts(intArray);
     }
 
     /**
