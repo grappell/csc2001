@@ -12,14 +12,14 @@ public class IntArray {
     private int activeElementEnd = 0;
 
     /**
-     * Instantiates a new Int array. Canonical constructor.
+     * Instantiates a new IntArray. Canonical constructor.
      */
     public IntArray() {}
 
     /**
-     * Instantiates a new Int array.
-     *
-     * @param from list of Integers to seed the array. Insertion ordering depends on list input
+     * Instantiates a new IntArray from an existing list.
+     * Example: new IntArray(List.of(1, 2, 3, 4)) --> {1, 2, 3, 4}
+     * @param from list of Integers to seed the array. Insertion ordering depends on list implementation used.
      */
     public IntArray(List<Integer> from) {
         from.forEach(this::addToEnd);
