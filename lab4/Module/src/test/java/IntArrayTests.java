@@ -53,8 +53,8 @@ public class IntArrayTests {
     }
 
     @Test
-    public void empty() {
-        assertTrue(new IntArray().empty());
+    public void isEmpty() {
+        assertTrue(new IntArray().isEmpty());
     }
 
     @Test
@@ -63,4 +63,10 @@ public class IntArrayTests {
         var b = new IntArray(List.of(5, 2, 80085, 3, 4));
         assertTrue(a.equalElts(b));
     }
+
+    @Test
+    public void empty() {
+        assertEquals(new IntArray(), new IntArray(List.of(9, 19, 29)).empty());
+    }
+
 }

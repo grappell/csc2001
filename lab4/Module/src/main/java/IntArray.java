@@ -117,8 +117,17 @@ public class IntArray {
      * Example: {}.empty() --> returns true
      * @return if the list is empty
      */
-    public boolean empty() {
+    public boolean isEmpty() {
         return ptr == 0;
+    }
+
+    /**
+     * Return a new empty IntArray
+     * Example: {1, 2, 3}.empty() --> returns IntArray
+     * @return a new IntArray
+     */
+    public IntArray empty() {
+        return new IntArray();
     }
 
     /**
