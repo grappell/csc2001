@@ -22,14 +22,14 @@ public class ArrayStack<T> {
     // Pop an element off the stack
     // Example: stack.pop() --> 291
     public T pop() {
-        if(ptr == 0) throw new NoSuchElementException("Stack is empty");
+        if(isEmpty()) throw new NoSuchElementException("Stack is empty");
         return arr[--ptr];
     }
 
     // Get the element on the top of the stack
     // Example: stack.peep() --> 291
     public T peek() {
-        if(ptr == 0) throw new NoSuchElementException("Stack is empty");
+        if(isEmpty()) throw new NoSuchElementException("Stack is empty");
         return arr[ptr - 1];
     }
 
@@ -38,7 +38,6 @@ public class ArrayStack<T> {
     public boolean isEmpty() {
         return ptr == 0;
     }
-
 
     // Get the size of the stack
     // Example: stack.size() --> 3

@@ -32,10 +32,9 @@ public class IntArray {
      */
     public void addToStart(int e) {
         var temp = getResizeAwareTemp();
-        System.arraycopy(arr, 0, temp, 1, ptr);
+        System.arraycopy(arr, 0, temp, 1, ptr++);
         temp[0] = e;
         arr = temp;
-        ptr++;
     }
 
     /**
@@ -60,16 +59,15 @@ public class IntArray {
      */
     public void insert(int index, int e) {
 
-        if (index < 0 || index > ptr) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkIndex(index);
 
         var temp = getResizeAwareTemp();
         System.arraycopy(arr, 0, temp, 0, index);
         System.arraycopy(arr, index, temp, index + 1, ptr - index);
-        ptr++;
         temp[index] = e;
         arr = temp;
+        ptr++;
+
     }
 
     /**
@@ -81,9 +79,7 @@ public class IntArray {
      */
     public int remove(int index) {
 
-        if (index < 0 || index >= ptr) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkIndex(index);
 
         var res = arr[index];
         System.arraycopy(arr, index + 1, arr, index, ptr - index - 1);
@@ -99,9 +95,7 @@ public class IntArray {
      * @throws IndexOutOfBoundsException if provided index is < 0 or outside the array
      */
     public void set(int index, int newVal) {
-        if (index < 0 || index >= ptr) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkIndex(index);
         arr[index] = newVal;
     }
 
@@ -113,9 +107,7 @@ public class IntArray {
      * @throws IndexOutOfBoundsException if provided index is < 0 or outside the array
      */
     public int get(int index) {
-        if (index < 0 || index >= ptr) {
-            throw new IndexOutOfBoundsException();
-        }
+        checkIndex(index);
         return arr[index];
     }
 
@@ -181,5 +173,9 @@ public class IntArray {
     @Override
     public int hashCode() {
         return Objects.hash(Arrays.hashCode(Arrays.copyOfRange(arr, 0, ptr)), ptr);
+    }
+
+    private void checkIndex(int i) {
+        if (i < 0 || i > ptr) throw new IndexOutOfBoundsException();
     }
 }
