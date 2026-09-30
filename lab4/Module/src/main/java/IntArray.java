@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 public class IntArray {
 
     private int[] arr = new int[3];
-    private int activeElementEnd = 0;
+    private int ptr = 0;
 
     /**
      * Instantiates a new IntArray. Canonical constructor.
@@ -32,10 +32,10 @@ public class IntArray {
      */
     public void addToStart(int e) {
         var temp = getResizeAwareTemp();
-        System.arraycopy(arr, 0, temp, 1, activeElementEnd);
+        System.arraycopy(arr, 0, temp, 1, ptr);
         temp[0] = e;
         arr = temp;
-        activeElementEnd++;
+        ptr++;
     }
 
     /**
@@ -44,12 +44,12 @@ public class IntArray {
      * @param e the element to add to the end
      */
     public void addToEnd(int e) {
-        if(activeElementEnd == arr.length) {
+        if(ptr == arr.length) {
             var temp = getResizeAwareTemp();
-            System.arraycopy(arr, 0, temp, 0, activeElementEnd);
+            System.arraycopy(arr, 0, temp, 0, ptr);
             arr = temp;
         }
-        arr[activeElementEnd++] = e;
+        arr[ptr++] = e;
     }
 
     /**
@@ -60,14 +60,14 @@ public class IntArray {
      */
     public void insert(int index, int e) {
 
-        if (index < 0 || index > activeElementEnd) {
+        if (index < 0 || index > ptr) {
             throw new IndexOutOfBoundsException();
         }
 
         var temp = getResizeAwareTemp();
         System.arraycopy(arr, 0, temp, 0, index);
-        System.arraycopy(arr, index, temp, index + 1, activeElementEnd - index);
-        activeElementEnd++;
+        System.arraycopy(arr, index, temp, index + 1, ptr - index);
+        ptr++;
         temp[index] = e;
         arr = temp;
     }
@@ -81,13 +81,13 @@ public class IntArray {
      */
     public int remove(int index) {
 
-        if (index < 0 || index >= activeElementEnd) {
+        if (index < 0 || index >= ptr) {
             throw new IndexOutOfBoundsException();
         }
 
         var res = arr[index];
-        System.arraycopy(arr, index + 1, arr, index, activeElementEnd - index - 1);
-        activeElementEnd--;
+        System.arraycopy(arr, index + 1, arr, index, ptr - index - 1);
+        ptr--;
         return res;
     }
 
@@ -99,7 +99,7 @@ public class IntArray {
      * @throws IndexOutOfBoundsException if provided index is < 0 or outside the array
      */
     public void set(int index, int newVal) {
-        if (index < 0 || index >= activeElementEnd) {
+        if (index < 0 || index >= ptr) {
             throw new IndexOutOfBoundsException();
         }
         arr[index] = newVal;
@@ -113,7 +113,7 @@ public class IntArray {
      * @throws IndexOutOfBoundsException if provided index is < 0 or outside the array
      */
     public int get(int index) {
-        if (index < 0 || index >= activeElementEnd) {
+        if (index < 0 || index >= ptr) {
             throw new IndexOutOfBoundsException();
         }
         return arr[index];
@@ -126,7 +126,7 @@ public class IntArray {
      * @return if the list is empty
      */
     public boolean empty() {
-        return activeElementEnd == 0;
+        return ptr == 0;
     }
 
     /**
@@ -136,7 +136,7 @@ public class IntArray {
      * @return true if the lists are equal
      */
     public boolean equalElts(IntArray o) {
-        var min = Math.min(activeElementEnd, o.activeElementEnd);
+        var min = Math.min(ptr, o.ptr);
         return Arrays.equals(arr, 0, min, o.arr, 0, min);
     }
 
@@ -146,7 +146,7 @@ public class IntArray {
      * @return the IntStream
      */
     public IntStream stream() {
-        return Arrays.stream(arr, 0, activeElementEnd);
+        return Arrays.stream(arr, 0, ptr);
     }
 
     /**
@@ -155,11 +155,11 @@ public class IntArray {
      * @return the length
      */
     public int length() {
-        return activeElementEnd;
+        return ptr;
     }
 
     private int[] getResizeAwareTemp() {
-        return new int[activeElementEnd == arr.length ? arr.length * 2 : arr.length];
+        return new int[ptr == arr.length ? arr.length * 2 : arr.length];
     }
 
     /**
@@ -171,7 +171,7 @@ public class IntArray {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         IntArray intArray = (IntArray) o;
-        return activeElementEnd == intArray.activeElementEnd && equalElts(intArray);
+        return ptr == intArray.ptr && equalElts(intArray);
     }
 
     /**
@@ -180,6 +180,6 @@ public class IntArray {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(Arrays.hashCode(arr), activeElementEnd);
+        return Objects.hash(Arrays.hashCode(Arrays.copyOfRange(arr, 0, ptr)), ptr);
     }
 }
