@@ -1,10 +1,12 @@
-public record NumNode(double num) implements AST {
+public record NumNode(String in) implements AST { ;
+
     public double eval() {
-        return num;
+        if(!Parser.DOUBLE_PATTERN.matcher(in).matches()) throw new IllegalArgumentException("Invalid Token: " + in);
+        return Double.parseDouble(in);
     }
 
     @Override
     public String toString() {
-        return "" + num;
+        return in;
     }
 }

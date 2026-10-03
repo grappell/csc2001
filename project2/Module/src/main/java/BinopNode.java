@@ -23,7 +23,9 @@ public record BinopNode(AST left, AST right, String op) implements AST {
 
         public static Ops getOp(String in) {
             String order = "+-/*^%";
-            return Ops.values()[order.indexOf(in)];
+            var index = order.indexOf(in);
+            if(index == -1) throw new IllegalArgumentException("Invalid token: " + in);
+            return Ops.values()[index];
         }
 
         public String getString() {
@@ -43,6 +45,14 @@ public record BinopNode(AST left, AST right, String op) implements AST {
     @Override
     public String toString() {
         return "(" + left.toString() + ") " +  Ops.getOp(op).getString() + " (" + right.toString() + ")";
+    }
+
+    public BinopNode withSwap() {
+        return new BinopNode(right, left, op);
+    }
+
+    public static void checkOp(String in) {
+        Ops.getOp(in);
     }
 
 }
