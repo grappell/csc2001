@@ -1,3 +1,7 @@
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 public record BinopNode(AST left, AST right, String op) implements AST {
@@ -37,6 +41,7 @@ public record BinopNode(AST left, AST right, String op) implements AST {
         }
     }
 
+
     @Override
     public double eval() {
         return Ops.getOp(op).apply(left, right);
@@ -54,5 +59,4 @@ public record BinopNode(AST left, AST right, String op) implements AST {
     public static void checkOp(String in) {
         Ops.getOp(in);
     }
-
 }

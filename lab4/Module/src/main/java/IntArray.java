@@ -28,6 +28,7 @@ public class IntArray {
     /**
      * Add to start of ArrayList.
      * Example: {1, 2, 3}.addToStart(4) --> {4, 1, 2, 3}
+     * Pseudocode: Get a temp array, resizing if needed, and copy over all the elements offset by one. Then add the new element to the front
      * @param e the element to add to the start of the ArrayList
      */
     public void addToStart(int e) {
@@ -40,6 +41,7 @@ public class IntArray {
     /**
      * Add to end of ArrayList.
      * Example: {1, 2, 3}.addToEnd(4) --> {1, 2, 3, 4}
+     * Pseudocode: Add to the end of the array and increment the pointer. Double the length if needed
      * @param e the element to add to the end
      */
     public void addToEnd(int e) {
@@ -54,6 +56,8 @@ public class IntArray {
     /**
      * Insert an element at a specific index
      * Example: {1, 2, 3}.insert(1, 10) --> {1, 10, 2, 3}
+     * Pseudocode: Check if the index is valid, if so, create a temp array that's potentially resized. From there copy
+     *  over up to the index, then the index to the end with an 1 index offset. Then insert the element and increment the ptr
      * @param index the index at witch to insert
      * @param e     the element to insert
      */
@@ -73,6 +77,7 @@ public class IntArray {
     /**
      * Remove a specific element at an index and return the removed element
      * Example: {1, 2, 3}.remove(1) --> {1, 3} and returns 2
+     * Pseudocode: Check if the index is valid. If so, copy the array from the index to the end, offsetting back by 1, then decrement the ptr
      * @param index the index to remove
      * @return the integer that was removed
      * @throws IndexOutOfBoundsException if provided index is < 0 or outside the array
@@ -90,6 +95,7 @@ public class IntArray {
     /**
      * Set a specific element to a new value
      * Example: {0, 1, 2}.set(0, 10) -->  {10, 1, 2}
+     * Pseudocode: Check if the index is valid and if so set the value at that index.
      * @param index  the index to set
      * @param newVal the new val to set said index to
      * @throws IndexOutOfBoundsException if provided index is < 0 or outside the array
@@ -102,6 +108,7 @@ public class IntArray {
     /**
      * Get a specific index
      * Example: {1, 2, 3}.get(2) --> returns 3
+     * Pseudocode: Check if the index is valid, and if so get the value at that index
      * @param index the index to get
      * @return the integer at that index
      * @throws IndexOutOfBoundsException if provided index is < 0 or outside the array
@@ -113,6 +120,7 @@ public class IntArray {
 
     /**
      * If the ArrayList is empty
+     * Pseudocode: The array is empty if the pointer is at the start. Return true if the ptr is 0.
      * Example: {0, 1, 2}.empty() --> returns false
      * Example: {}.empty() --> returns true
      * @return if the list is empty
@@ -123,6 +131,7 @@ public class IntArray {
 
     /**
      * Return a new empty IntArray
+     * Pseudocode: Return a newly constructed IntArray
      * Example: {1, 2, 3}.empty() --> returns IntArray
      * @return a new IntArray
      */
@@ -132,6 +141,7 @@ public class IntArray {
 
     /**
      * Checks that the elements in a list mach up to the length of the smallest list
+     * Pseudocode: Find the smaller length by getting the min of the pointers, and uses the array utility to compare the values up till there
      * Example: {1, 2, 3}.equalElts({1, 2, 3, 4, 5}) --> returns true;
      * @param o ArrayList to compare against
      * @return true if the lists are equal
@@ -143,6 +153,7 @@ public class IntArray {
 
     /**
      * Create a stream of the elements
+     * Pseudocode: Uses the Array.stream() util to build a stream up to the pointer
      * Example: {1, 2, 3}.stream() -->  returns a IntStream of 1, 2, 3
      * @return the IntStream
      */
@@ -152,6 +163,7 @@ public class IntArray {
 
     /**
      * Get the length of the ArrayList
+     * Pseudocode: Return the pointer (witch is the active length)
      * Example: {1, 2, 3}.length() --> returns 3
      * @return the length
      */
@@ -165,6 +177,7 @@ public class IntArray {
 
     /**
      * Check if two ArrayLists are equal
+     * Pseudocode: Check if the other is the same class, then if so, compare the length and the elements using equalsElts
      * @param o the reference object with which to compare.
      * @return true if the two lists are equal
      */
@@ -177,6 +190,7 @@ public class IntArray {
 
     /**
      * Get a hash for this ArrayList
+     * Pseudocode: use the Objects.hash() util to has an array over the active elements.
      * @return a hash of this ArrayList
      */
     @Override

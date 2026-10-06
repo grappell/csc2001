@@ -1,3 +1,5 @@
+import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 public class Parser {
@@ -7,9 +9,14 @@ public class Parser {
         EXPR
     }
 
-    public static final Pattern DOUBLE_PATTERN = Pattern.compile(
+    private static final Pattern DOUBLE_PATTERN = Pattern.compile(
             "\\s*[+-]?(?:NaN|Infinity|(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?)[dDfF]?\\s*"
     );
+
+    private static final Map<String, Integer> precedence =
+            Map.of("^", 3, "/", 2, "*", 2,"%", 2,  "+", 1, "-", 1);
+
+    // ------- Postfix Implementation -------
 
     public static AST parsePostfix(String in) {
 
@@ -41,20 +48,66 @@ public class Parser {
         return new BinopNode(stack.pop(), stack.pop(), s).withSwap();
     }
 
-    private static <T> void out(T o) {
-        System.out.println(o);
+    // ------- Infix Implementation -------
+
+    public static AST parseInfix(String in) {
+
+        if(in.isEmpty()) throw new IllegalArgumentException("Empty Input");
+
+        ArrayStack<AST> operands = new ArrayStack<>();
+        ArrayStack<String> operators = new ArrayStack<>();
+        var tokens = in.split("\\s+");
+
+        for(var token : tokens) {
+            var type = getType(token);
+            if(type == Type.VAL) operands.push(new NumNode(token));
+            else if(token.matches("\\(")) operators.push(token);
+            else if(token.matches("\\)")) handleClosing(operands, operators);
+            else handleOperator(operands, operators, token); // Implicitly type == Type.EXPR and not a parenthesis
+        }
+
+        while(!operators.isEmpty()) {
+            operands.push(new BinopNode(operands.pop(), operands.pop(), operators.pop()).withSwap());
+        }
+
+        return operands.peek();
     }
 
+    private static void handleClosing(ArrayStack<AST> operands, ArrayStack<String> operators) {
+        while(!operators.peek().equals("(")) {
+            operands.push(new BinopNode(operands.pop(), operands.pop(), operators.pop()).withSwap());
+        }
+        operators.pop();
+    }
+
+    private static void handleOperator(ArrayStack<AST> operands, ArrayStack<String> operators, String token) {
+        while(!operators.isEmpty() && !operators.peek().equals("(") && shouldApplyFirst(operators.peek(), token)) {
+            operands.push(new BinopNode(operands.pop(), operands.pop(), operators.pop()).withSwap());
+        }
+        operators.push(token);
+    }
+
+    private static boolean shouldApplyFirst(String o2, String o1) {
+        return precedence.get(o2) > precedence.get(o1) || (precedence.get(o2).equals(precedence.get(o1)) && !o1.equals("^"));
+    }
+
+
     static void main(String[] args) {
-
-        var postfix = "10 -3.3 +";
-
         out("   ---   Postfix   ---   ");
-        out("Input: " + postfix);
-        var res = parsePostfix(postfix);
-        out(res + " --> " + res.eval());
+        tester(Parser::parsePostfix, "2 3 2 ^ ^");
 
+        out("   ---   Infix   ---   ");
+        tester(Parser::parseInfix, "2 ^ 3 ^ 2");
+        tester(Parser::parseInfix, "12 + 8 * 2 - ( 10 / 2 ) + 3 * 4 - 24");
+    }
 
-        out("\n   ---   Prefix   ---   ");
+    private static void tester(Function<String, AST> func, String input) {
+        out("Input: " + input);
+        var res = func.apply(input);
+        out(res + " --> " + res.eval() + "\n");
+    }
+
+    private static <T> void out(T o) {
+        System.out.println(o);
     }
 }
