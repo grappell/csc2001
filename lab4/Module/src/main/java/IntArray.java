@@ -19,6 +19,7 @@ public class IntArray {
     /**
      * Instantiates a new IntArray from an existing list.
      * Example: new IntArray(List.of(1, 2, 3, 4)) --> {1, 2, 3, 4}
+     * Pseudocode: Take a list and iteratively add it to the end of the array
      * @param from list of Integers to seed the array. Insertion ordering depends on list implementation used.
      */
     public IntArray(List<Integer> from) {
