@@ -1,0 +1,175 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > ArrayStack</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: ArrayStack (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ArrayStack</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (4/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93.8%
+  </span>
+  <span class="absValue">
+    (15/16)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;import java.util.Arrays;
+&nbsp;import java.util.List;
+&nbsp;import java.util.NoSuchElementException;
+&nbsp;import java.util.stream.Stream;
+&nbsp;
+<b class="fc">&nbsp;public class ArrayStack&lt;T&gt; {</b>
+&nbsp;
+<b class="fc">&nbsp;    private T[] arr = makeArray(2);</b>
+<b class="fc">&nbsp;    private int ptr = 0;</b>
+&nbsp;
+&nbsp;    // Push a new element onto the stack.
+&nbsp;    // Example: stack.push(291) --&gt; returns void
+&nbsp;    public void push(T item) {
+<b class="fc">&nbsp;        if(ptr == arr.length) {</b>
+<b class="fc">&nbsp;            var temp = makeArray(arr.length * 2);</b>
+<b class="fc">&nbsp;            System.arraycopy(arr, 0, temp, 0, arr.length);</b>
+<b class="fc">&nbsp;            arr = temp;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        arr[ptr++] = item;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Pop an element off the stack
+&nbsp;    // Example: stack.pop() --&gt; 291
+&nbsp;    public T pop() {
+<b class="pc">&nbsp;        if(isEmpty()) throw new NoSuchElementException(&quot;Stack is empty&quot;);</b>
+<b class="fc">&nbsp;        return arr[--ptr];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Get the element on the top of the stack
+&nbsp;    // Example: stack.peep() --&gt; 291
+&nbsp;    public T peek() {
+<b class="pc">&nbsp;        if(isEmpty()) throw new NoSuchElementException(&quot;Stack is empty&quot;);</b>
+<b class="fc">&nbsp;        return arr[ptr - 1];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Check if the stack is empty
+&nbsp;    // Example: (on an empty stack) stack.isEmpty() --&gt; true
+&nbsp;    public boolean isEmpty() {
+<b class="fc">&nbsp;        return ptr == 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Get the size of the stack
+&nbsp;    // Example: stack.size() --&gt; 3
+&nbsp;    public int size() {
+<b class="fc">&nbsp;        return ptr;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Get a stream of the stack, from top to bottom
+&nbsp;    // Example: stack.stream() --&gt; Stream&lt;T&gt;
+&nbsp;    public Stream&lt;T&gt; stream() {
+<b class="nc">&nbsp;        return List.of(Arrays.copyOfRange(arr, 0, ptr)).reversed().stream();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @SuppressWarnings(&quot;unchecked&quot;)
+&nbsp;    private T[] makeArray(int len) {
+<b class="fc">&nbsp;        return (T[]) new Object[len];</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-10-07 16:57</div>
+</div>
+</body>
+</html>

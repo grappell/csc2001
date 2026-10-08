@@ -1,0 +1,329 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Parser</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: Parser (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Parser</td>
+<td class="coverageStat">
+  <span class="percent">
+    91.7%
+  </span>
+  <span class="absValue">
+    (11/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80.4%
+  </span>
+  <span class="absValue">
+    (37/46)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.1%
+  </span>
+  <span class="absValue">
+    (52/53)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Parser$Type</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    92.9%
+  </span>
+  <span class="absValue">
+    (13/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80.4%
+  </span>
+  <span class="absValue">
+    (37/46)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.2%
+  </span>
+  <span class="absValue">
+    (55/56)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;import java.util.Map;
+&nbsp;import java.util.function.Function;
+&nbsp;import java.util.regex.Pattern;
+&nbsp;
+&nbsp;
+<b class="nc">&nbsp;public class Parser {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Enum to represent a type of token
+&nbsp;     */
+<b class="fc">&nbsp;    private enum Type {</b>
+<b class="fc">&nbsp;        VAL,</b>
+<b class="fc">&nbsp;        EXPR</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A regex expression matching strings that would work in Double.parseDouble()
+&nbsp;     */
+<b class="fc">&nbsp;    private static final Pattern DOUBLE_PATTERN = Pattern.compile(</b>
+&nbsp;            &quot;\\s*[+-]?(?:NaN|Infinity|(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?)[dDfF]?\\s*&quot;
+&nbsp;    );
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A map of operator precedence. Higher applies sooner.
+&nbsp;     */
+<b class="fc">&nbsp;    private static final Map&lt;String, Integer&gt; precedence =</b>
+<b class="fc">&nbsp;            Map.of(&quot;^&quot;, 3, &quot;/&quot;, 2, &quot;*&quot;, 2,&quot;%&quot;, 2,  &quot;+&quot;, 1, &quot;-&quot;, 1);</b>
+&nbsp;
+&nbsp;    // ------- Postfix Implementation -------
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Parse a postfix formatted expression to an AST expression
+&nbsp;     * Example: parsePostfix(&quot;2 3 2 ^ ^&quot;) -&gt; returns AST (2) ^ ((3) ^ (2))
+&nbsp;     * @param in the string to parse
+&nbsp;     * @return the AST representation of the postfix expression
+&nbsp;     */
+&nbsp;    public static AST parsePostfix(String in) {
+&nbsp;
+<b class="pc">&nbsp;        if(in.isEmpty()) throw new IllegalArgumentException(&quot;Empty Input&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        ArrayStack&lt;AST&gt; stack = new ArrayStack&lt;&gt;();</b>
+<b class="fc">&nbsp;        var tokens = in.trim().split(&quot;\\s+&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        for(String token: tokens) {</b>
+<b class="fc">&nbsp;            var parse = parse(token, getType(token), stack);</b>
+<b class="fc">&nbsp;            stack.push(parse);</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if(stack.size() &gt; 1) throw new IllegalArgumentException(&quot;Too Many Operands&quot;);</b>
+<b class="fc">&nbsp;        return stack.peek();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Pase a token into an AST node, mutating the stack should it be an operator
+&nbsp;     * Example: parse(&quot;2&quot;, Type.VAL, stack) -&gt; returns NumNode(2)
+&nbsp;     * @param s the token being parsed
+&nbsp;     * @param t the type of token being parsed
+&nbsp;     * @param stack the AST stack to mutate
+&nbsp;     * @return an AST from this token
+&nbsp;     */
+&nbsp;    private static AST parse(String s, Type t, ArrayStack&lt;AST&gt; stack) {
+<b class="fc">&nbsp;        if(t == Type.VAL) return new NumNode(s);</b>
+<b class="fc">&nbsp;        BinopNode.checkOp(s); // Will throw if the token is invalid</b>
+&nbsp;
+<b class="pc">&nbsp;        if(stack.size() &lt; 2) throw new IllegalArgumentException(&quot;Insufficient Operands&quot;);</b>
+<b class="fc">&nbsp;        return new BinopNode(stack.pop(), stack.pop(), s);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // ------- Infix Implementation -------
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Parse an infix formatted expression to an AST expression
+&nbsp;     * Example: parseInfix(&quot;2 ^ 3 ^ 2&quot;) -&gt; returns an AST (2) ^ ((3) ^ (2))
+&nbsp;     * @param in the infix expression to parse
+&nbsp;     * @return the AST representation of the expression
+&nbsp;     */
+&nbsp;    public static AST parseInfix(String in) {
+&nbsp;
+<b class="pc">&nbsp;        if(in.isEmpty()) throw new IllegalArgumentException(&quot;Empty Input&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        ArrayStack&lt;AST&gt; operands = new ArrayStack&lt;&gt;();</b>
+<b class="fc">&nbsp;        ArrayStack&lt;String&gt; operators = new ArrayStack&lt;&gt;();</b>
+<b class="fc">&nbsp;        var tokens = in.trim().split(&quot;\\s+&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        for(var token : tokens) {</b>
+<b class="fc">&nbsp;            var type = getType(token);</b>
+<b class="fc">&nbsp;            if(type == Type.VAL) operands.push(new NumNode(token));</b>
+<b class="fc">&nbsp;            else if(token.equals(&quot;(&quot;)) operators.push(token);</b>
+<b class="fc">&nbsp;            else if(token.equals(&quot;)&quot;)) handleClosing(operands, operators);</b>
+<b class="fc">&nbsp;            else handleOperator(operands, operators, token); // Implicitly Type.EXPR and not a parenthesis</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        while(!operators.isEmpty()) {</b>
+<b class="pc">&nbsp;            if(operators.peek().equals(&quot;(&quot;)) throw new IllegalArgumentException(&quot;Mismatched Opening Parenthesis&quot;);</b>
+<b class="pc">&nbsp;            if(operands.size() &lt; 2) throw new IllegalArgumentException(&quot;Insufficient Operands&quot;);</b>
+<b class="fc">&nbsp;            operands.push(new BinopNode(operands.pop(), operands.pop(), operators.pop()));</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if(operands.size() &gt; 1) throw new IllegalArgumentException(&quot;Insufficient Operators&quot;);</b>
+<b class="fc">&nbsp;        return operands.peek();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Handle closing parenthesis, mutating the operators and operands stacks
+&nbsp;     * Example: if(input.is(&quot;)&quot;)) handleClosing(operands, operators) -&gt; mutates the stacks to condense down expressions
+&nbsp;     * within the parenthesis. Also checks for mismatched closing parenthesis
+&nbsp;     * @param operands an AST Stack of operands
+&nbsp;     * @param operators an AST stack of operators
+&nbsp;     */
+&nbsp;    private static void handleClosing(ArrayStack&lt;AST&gt; operands, ArrayStack&lt;String&gt; operators) {
+<b class="pc">&nbsp;        while(!operators.isEmpty() &amp;&amp; !operators.peek().equals(&quot;(&quot;)) {</b>
+<b class="fc">&nbsp;            operands.push(new BinopNode(operands.pop(), operands.pop(), operators.pop()));</b>
+&nbsp;        }
+&nbsp;
+<b class="pc">&nbsp;        if(operators.isEmpty()) throw new IllegalArgumentException(&quot;Mismatched Closing Parenthesis&quot;);</b>
+<b class="fc">&nbsp;        operators.pop();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Handle operator tokens, mutating the operator and operands stack.
+&nbsp;     * Example: if(isOperator(in)) handleOperator(operands, operators, in) -&gt;  mutates operators and operands to follow
+&nbsp;     * precedence and association, collapsing expressions as needed. Also checks if inputted token is a valid operator
+&nbsp;     * @param operands an AST stack of operands
+&nbsp;     * @param operators an AST stack of operators
+&nbsp;     * @param token the inputted operator token
+&nbsp;     */
+&nbsp;    private static void handleOperator(ArrayStack&lt;AST&gt; operands, ArrayStack&lt;String&gt; operators, String token) {
+<b class="fc">&nbsp;        BinopNode.checkOp(token);</b>
+<b class="fc">&nbsp;        while(!operators.isEmpty() &amp;&amp; !operators.peek().equals(&quot;(&quot;) &amp;&amp; shouldApplyFirst(operators.peek(), token)) {</b>
+<b class="fc">&nbsp;            operands.push(new BinopNode(operands.pop(), operands.pop(), operators.pop()));</b>
+&nbsp;        }
+<b class="fc">&nbsp;        operators.push(token);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks the precedence order and association of passed in operators
+&nbsp;     * @param o2 the second operator
+&nbsp;     * @param o1 the first operator
+&nbsp;     * @return a boolean denoting if the first operator should apply first
+&nbsp;     */
+&nbsp;    private static boolean shouldApplyFirst(String o2, String o1) {
+<b class="fc">&nbsp;        return precedence.get(o2) &gt; precedence.get(o1) || (precedence.get(o2).equals(precedence.get(o1)) &amp;&amp; !o1.equals(&quot;^&quot;));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // ------- Util Implementations -------
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Matches the string to a known double regex
+&nbsp;     * @param in the string to check
+&nbsp;     * @return a Type enum (VAL or EXPR)
+&nbsp;     */
+&nbsp;    private static Type getType(String in) {
+<b class="fc">&nbsp;        return DOUBLE_PATTERN.matcher(in).matches() ? Type.VAL : Type.EXPR;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // ------- Main Implementation -------
+&nbsp;
+&nbsp;    static void main() {
+<b class="fc">&nbsp;        out(&quot;   ---   Postfix   ---   &quot;);</b>
+<b class="fc">&nbsp;        tester(Parser::parsePostfix, &quot;2 3 2 ^ ^&quot;);</b>
+&nbsp;
+<b class="fc">&nbsp;        out(&quot;   ---   Infix   ---   &quot;);</b>
+<b class="fc">&nbsp;        tester(Parser::parseInfix, &quot;2 ^ 3 ^ 2&quot;);</b>
+<b class="fc">&nbsp;        tester(Parser::parseInfix, &quot;12 + 8 * 2 - ( 10 / 2 ) + 3 * 4 - 24&quot;);</b>
+<b class="fc">&nbsp;        tester(Parser::parseInfix, &quot;( ( ) ( ) ( ) ( ) ( ) ( ( ) 12 / 12 * 4 ) )&quot;);</b>
+<b class="fc">&nbsp;        tester(Parser::parseInfix, &quot;10 / 0&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static void tester(Function&lt;String, AST&gt; func, String input) {
+<b class="fc">&nbsp;        out(&quot;Input: &quot; + input);</b>
+<b class="fc">&nbsp;        var res = func.apply(input);</b>
+<b class="fc">&nbsp;        out(res + &quot; --&gt; &quot; + res.eval() + &quot;\n&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private static &lt;T&gt; void out(T o) {
+<b class="fc">&nbsp;        System.out.println(o);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-10-07 16:57</div>
+</div>
+</body>
+</html>

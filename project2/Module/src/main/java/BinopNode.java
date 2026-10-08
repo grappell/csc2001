@@ -10,7 +10,7 @@ public record BinopNode(AST right, AST left, String op) implements AST {
         ADD("+", Double::sum),
         SUBTRACT("-", (a, b) -> a - b),
         DIVIDE("/", (a, b) -> {
-            if(b == 0) throw new ArithmeticException("Cannot Divide by 0");
+            if(b == 0) throw new IllegalArgumentException("Cannot Divide by 0");
             return a / b;
         }),
         MULTIPLY("*", (a, b) -> a * b),

@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 public class ArrayStack<T> {
 
-    private T[] arr = makeArray(10);
+    private T[] arr = makeArray(2);
     private int ptr = 0;
 
     // Push a new element onto the stack.
