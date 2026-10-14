@@ -1,0 +1,123 @@
+C:\Users\grappell\.jdks\ms-25.0.4.1\bin\java.exe "-javaagent:C:\Program Files\JetBrains\IntelliJ IDEA 2026.2.1\lib\idea_rt.jar=54933" -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath C:\Users\grappell\IdeaProjects\csc2001\lab5\Module\target\classes Main
+LLStack push/pop took ran ~9400 iterations in 100ms
+LLStack push/pop took ran ~12200 iterations in 200ms
+LLStack push/pop took ran ~10100 iterations in 300ms
+ -- Check --
+For: 12200 - 448.4936ms; goal 200ms
+
+AStack push/pop took ran ~20200 iterations in 100ms
+AStack push/pop took ran ~29300 iterations in 200ms
+AStack push/pop took ran ~33600 iterations in 300ms
+ -- Check --
+For: 33600 - 321.2537ms; goal 300ms
+
+LLStack push/pop took ran ~10500 iterations in 100ms
+LLStack push/pop took ran ~12800 iterations in 200ms
+LLStack push/pop took ran ~15200 iterations in 300ms
+ -- Check --
+For: 15200 - 280.6489ms; goal 300ms
+
+AStack push/pop took ran ~18900 iterations in 100ms
+AStack push/pop took ran ~30400 iterations in 200ms
+AStack push/pop took ran ~32500 iterations in 300ms
+ -- Check --
+For: 32500 - 238.808ms; goal 300ms
+
+LLStack push/pop took ran ~10200 iterations in 100ms
+LLStack push/pop took ran ~12600 iterations in 200ms
+LLStack push/pop took ran ~15400 iterations in 300ms
+ -- Check --
+For: 15400 - 319.5069ms; goal 300ms
+
+AStack push/pop took ran ~20400 iterations in 100ms
+AStack push/pop took ran ~27400 iterations in 200ms
+AStack push/pop took ran ~32700 iterations in 300ms
+ -- Check --
+For: 32700 - 273.8929ms; goal 300ms
+
+LLStack push/pop took ran ~10100 iterations in 100ms
+LLStack push/pop took ran ~13800 iterations in 200ms
+LLStack push/pop took ran ~15400 iterations in 300ms
+ -- Check --
+For: 15400 - 248.9075ms; goal 300ms
+
+AStack push/pop took ran ~21200 iterations in 100ms
+AStack push/pop took ran ~31600 iterations in 200ms
+AStack push/pop took ran ~35100 iterations in 300ms
+ -- Check --
+For: 35100 - 265.3799ms; goal 300ms
+
+LLStack push/pop took ran ~10400 iterations in 100ms
+LLStack push/pop took ran ~12900 iterations in 200ms
+LLStack push/pop took ran ~14700 iterations in 300ms
+ -- Check --
+For: 14700 - 336.3666ms; goal 300ms
+
+AStack push/pop took ran ~20800 iterations in 100ms
+AStack push/pop took ran ~28500 iterations in 200ms
+AStack push/pop took ran ~32600 iterations in 300ms
+ -- Check --
+For: 32600 - 236.5827ms; goal 300ms
+
+LLStack push/pop took ran ~10300 iterations in 100ms
+LLStack push/pop took ran ~13800 iterations in 200ms
+LLStack push/pop took ran ~15000 iterations in 300ms
+ -- Check --
+For: 15000 - 316.5404ms; goal 300ms
+
+AStack push/pop took ran ~20100 iterations in 100ms
+AStack push/pop took ran ~26700 iterations in 200ms
+AStack push/pop took ran ~33300 iterations in 300ms
+ -- Check --
+For: 33300 - 275.0395ms; goal 300ms
+
+LLStack push/pop took ran ~9800 iterations in 100ms
+LLStack push/pop took ran ~12200 iterations in 200ms
+LLStack push/pop took ran ~16500 iterations in 300ms
+ -- Check --
+For: 16500 - 328.8754ms; goal 300ms
+
+AStack push/pop took ran ~18800 iterations in 100ms
+AStack push/pop took ran ~27700 iterations in 200ms
+AStack push/pop took ran ~32100 iterations in 300ms
+ -- Check --
+For: 32100 - 294.2907ms; goal 300ms
+
+LLStack push/pop took ran ~9900 iterations in 100ms
+LLStack push/pop took ran ~13700 iterations in 200ms
+LLStack push/pop took ran ~17600 iterations in 300ms
+ -- Check --
+For: 17600 - 320.2733ms; goal 300ms
+
+AStack push/pop took ran ~21400 iterations in 100ms
+AStack push/pop took ran ~30000 iterations in 200ms
+AStack push/pop took ran ~37100 iterations in 300ms
+ -- Check --
+For: 37100 - 272.3409ms; goal 300ms
+
+LLStack push/pop took ran ~11000 iterations in 100ms
+LLStack push/pop took ran ~14100 iterations in 200ms
+LLStack push/pop took ran ~17300 iterations in 300ms
+ -- Check --
+For: 17300 - 304.8943ms; goal 300ms
+
+AStack push/pop took ran ~21800 iterations in 100ms
+AStack push/pop took ran ~30900 iterations in 200ms
+AStack push/pop took ran ~34000 iterations in 300ms
+ -- Check --
+For: 34000 - 297.1038ms; goal 300ms
+
+LLStack push/pop took ran ~9800 iterations in 100ms
+LLStack push/pop took ran ~13400 iterations in 200ms
+LLStack push/pop took ran ~16200 iterations in 300ms
+ -- Check --
+For: 16200 - 382.0716ms; goal 300ms
+
+AStack push/pop took ran ~20700 iterations in 100ms
+AStack push/pop took ran ~29200 iterations in 200ms
+AStack push/pop took ran ~34600 iterations in 300ms
+ -- Check --
+For: 34600 - 265.4558ms; goal 300ms
+
+
+Process finished with exit code 0
