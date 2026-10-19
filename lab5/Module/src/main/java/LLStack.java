@@ -1,17 +1,12 @@
 import java.util.Comparator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.stream.*;
 
-/**
- * The type Linked list.
- *
- * @param <T> the type parameter
- */
-public class LLStack<T> implements Stack<T> {
+public class LLStack<T> extends Testable<T> {
 
     /**
      * A node in the LinkedList
-     *
      * @param <N> the of data within
      */
     public class Node<N> {
@@ -21,7 +16,6 @@ public class LLStack<T> implements Stack<T> {
 
         /**
          * Instantiates a new Node.
-         *
          * @param data the data
          * @param next the next
          */
@@ -32,7 +26,6 @@ public class LLStack<T> implements Stack<T> {
 
         /**
          * Instantiates a new Node with the next node being null
-         *
          * @param data the data
          */
         public Node(N data) {
@@ -41,7 +34,6 @@ public class LLStack<T> implements Stack<T> {
 
         /**
          * Gets data.
-         *
          * @return the data
          */
         public N getData() {
@@ -50,7 +42,6 @@ public class LLStack<T> implements Stack<T> {
 
         /**
          * Gets next.
-         *
          * @return the next
          */
         public Node<N> getNext() {
@@ -59,7 +50,6 @@ public class LLStack<T> implements Stack<T> {
 
         /**
          * Sets data.
-         *
          * @param data the data
          */
         public void setData(N data) {
@@ -68,7 +58,6 @@ public class LLStack<T> implements Stack<T> {
 
         /**
          * Sets next.
-         *
          * @param next the next
          */
         public void setNext(Node<N> next) {
@@ -77,7 +66,6 @@ public class LLStack<T> implements Stack<T> {
 
         /**
          * Check if this node has a next link
-         *
          * @return true if it has a next node
          */
         public boolean hasNext() {
@@ -103,7 +91,6 @@ public class LLStack<T> implements Stack<T> {
 
     /**
      * Add to the end of the list.
-     *
      * @param item the item
      */
     private void addLast(T item) {
@@ -115,7 +102,6 @@ public class LLStack<T> implements Stack<T> {
 
     /**
      * Gets first node of the list
-     *
      * @return the first node
      */
     private Node<T> getFirst() {
@@ -126,7 +112,6 @@ public class LLStack<T> implements Stack<T> {
 
     /**
      * Insert after a specific element
-     *
      * @param item  the item to insert
      * @apiNote will fail and return false if the length of the list is 1 or the after data doesn't exist
      */
@@ -157,10 +142,10 @@ public class LLStack<T> implements Stack<T> {
 
     /**
      * Pop off the head of the list
-     *
      * @return the element removed
      */
     public T pop() {
+        if(isEmpty()) throw new NoSuchElementException("Empty Stack");
         var popped = head;
         head = head.getNext();
         length--;
@@ -169,7 +154,6 @@ public class LLStack<T> implements Stack<T> {
 
     /**
      * Gets last node of the list
-     *
      * @return the last node
      */
     private Node<T> getLast() {
@@ -182,16 +166,15 @@ public class LLStack<T> implements Stack<T> {
 
     /**
      * Gets first node of the list
-     *
      * @return the first node
      */
     public T peek() {
+        if(isEmpty()) throw new NoSuchElementException("Empty Stack");
         return head.getData();
     }
 
     /**
      * Get the length of the list
-     *
      * @return the length of the list
      */
     public int size() {
@@ -253,13 +236,47 @@ public class LLStack<T> implements Stack<T> {
         return this;
     }
 
-    public LLStack<T> emptyStack() {
+    /**
+     * Creates and returns an empty LLStack
+     * Example: LLStack.emptyStack() -> new LLStack{};
+     * @return a new, untouched LLStack
+     */
+    public static LLStack<String> emptyStack() {
         return new LLStack<>();
     }
 
-    public void clear() {
-        head = null;
-        length = 0;
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LLStack<?> other)) return false;
+        if (length != other.length) return false;
+
+        Node<?> current = head;
+        Node<Object> otherCurrent = (Node<Object>) other.head;
+
+        while (current != null && otherCurrent != null) {
+            if (!Objects.equals(current.getData(), otherCurrent.getData())) {
+                return false;
+            }
+            current = current.getNext();
+            otherCurrent = otherCurrent.getNext();
+        }
+
+        return current == null && otherCurrent == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        Node<?> current = head;
+
+        while (current != null) {
+            result += Objects.hashCode(current.data);
+            current = current.next;
+        }
+
+        return result;
     }
 
 }

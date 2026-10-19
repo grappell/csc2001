@@ -1,9 +1,10 @@
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Stream;
 
-public class AStack<T> implements Stack<T> {
+public class AStack<T> extends Testable<T> {
 
     private final ArrayList<T> list = new ArrayList<>();
 
@@ -51,8 +52,22 @@ public class AStack<T> implements Stack<T> {
         return list.stream();
     }
 
-    public AStack<T> emptyStack() {
+    // Creates and returns a new, untouched stack
+    // Example: AStack.emptyStack() -> ASack{};
+    public static AStack<String> emptyStack() {
         return new AStack<>();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AStack<?> other)) return false;
+        return Objects.equals(list, other.list);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(list);
     }
 
 }

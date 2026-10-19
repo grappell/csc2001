@@ -1,0 +1,23 @@
+LLStack add/remove took ran ~10800 iterations in 100ms
+LLStack add/remove took ran ~12100 iterations in 200ms
+LLStack add/remove took ran ~12800 iterations in 300ms
+ -- Check --
+For: 12800 - 297.5446ms; goal 300ms
+
+AStack add/remove took ran ~16200 iterations in 100ms
+AStack add/remove took ran ~27900 iterations in 200ms
+AStack add/remove took ran ~35600 iterations in 300ms
+ -- Check --
+For: 35600 - 320.3675ms; goal 300ms
+
+AQueue add/remove took ran ~827300 iterations in 100ms
+AQueue add/remove took ran ~1665800 iterations in 200ms
+AQueue add/remove took ran ~3155200 iterations in 300ms
+ -- Check --
+For: 3155200 - 117.8578ms; goal 300ms
+
+LLQueue add/remove took ran ~741200 iterations in 100ms
+LLQueue add/remove took ran ~1326300 iterations in 200ms
+LLQueue add/remove took ran ~2022200 iterations in 300ms
+ -- Check --
+For: 2022200 - 71.5589ms; goal 300ms

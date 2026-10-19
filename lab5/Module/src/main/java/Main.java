@@ -1,31 +1,31 @@
-import java.lang.reflect.Constructor;
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Main {
 
-    record TestRes(int iters, int goal) {};
+    record TestRes(int iters, int goal) {}
 
     static void main() {
 
-        for (int i = 0; i < 10; i++) {
+        Consumer<LLStack<Integer>> llPush = (stack) -> stack.push(getRandomInt(), Integer::compareTo);
+        Consumer<LLStack<Integer>> llPop = (stack) -> { if (!stack.isEmpty()) stack.pop(); };
+        testSweep("LLStack", llPush, llPop, LLStack::new);
 
-            Consumer<LLStack<Integer>> llPush = (stack) -> stack.push((int) Math.floor(Math.random() * Integer.MAX_VALUE), Integer::compareTo);
-            Consumer<LLStack<Integer>> llPop = (stack) -> { if (!stack.isEmpty()) stack.pop(); };
-            testSweep("LLStack",  llPush, llPop, LLStack::new);
+        Consumer<AStack<Integer>> aPush = s -> s.push(getRandomInt(), Integer::compareTo);
+        Consumer<AStack<Integer>> aPop = s -> { if (!s.isEmpty()) s.pop(); };
+        testSweep("AStack", aPush, aPop, AStack::new);
 
-            Consumer<AStack<Integer>> aPush = s -> s.push((int) Math.floor(Math.random() * Integer.MAX_VALUE), Integer::compareTo);
-            Consumer<AStack<Integer>> aPop = s -> { if (!s.isEmpty()) s.pop(); };
-            testSweep("AStack", aPush, aPop, AStack::new);
+        Consumer<AQueue<Integer>> aqPush = (stack) -> stack.enqueue(getRandomInt());
+        Consumer<AQueue<Integer>> aqPop = (stack) -> { if (!stack.isEmpty()) stack.dequeue(); };
+        testSweep("AQueue",  aqPush, aqPop, AQueue::new);
 
-        }
-
+        Consumer<LLQueue<Integer>> laPush = s -> s.enqueue(getRandomInt());
+        Consumer<LLQueue<Integer>> laPop = s -> { if (!s.isEmpty()) s.dequeue(); };
+        testSweep("LLQueue", laPush, laPop, LLQueue::new);
 
     }
 
-    public static <T> void testSweep(String name, Consumer<T> push, Consumer<T> pop, Supplier<T> creator) {
+    public static <T extends Testable<?>> void testSweep(String name, Consumer<T> push, Consumer<T> pop, Supplier<T> creator) {
 
         int msToNanos = 1_000_000;
         int sweeps = 3;
@@ -34,14 +34,14 @@ public class Main {
 
         for(int i = 1; i <= sweeps; i++) {
             var run = timeSet((long) i * 100 * msToNanos, push, pop, creator);
-            out(name + " push/pop took ran ~" + run + " iterations in " + i * 100 + "ms" );
+            out(name + " add/remove took ran ~" + run + " iterations in " + i * 100 + "ms" );
             if(run > maxRes.iters()) maxRes = new TestRes(run, i * 100);
         }
 
         out(" -- Check -- ");
-        Stack<Integer> li = (Stack<Integer>) creator.get();
-        var time = (double) timeFunction(() -> li.push((int) (Math.random() * Integer.MAX_VALUE), Integer::compare), maxRes.iters());
-        time += (double) timeFunction(li::pop, maxRes.iters());
+        var li = (Testable<Integer>) creator.get(); // Ignore for now, as we're only testing integers
+        var time = (double) timeFunction(() -> li.add(getRandomInt(), Integer::compare), maxRes.iters());
+        time += (double) timeFunction(li::remove, maxRes.iters());
         out("For: " + maxRes.iters() + " - " + time / 1_000_000 + "ms; goal " + maxRes.goal() + "ms\n");
     }
 
@@ -52,7 +52,7 @@ public class Main {
 
         while (true) {
 
-            if(runMultiplier > 10000) throw new RuntimeException("Took too long");
+            if(runMultiplier > 1_000_000) throw new RuntimeException("Took too long");
             T created = creator.get();
 
             long totalTime = timeFunction(() -> push.accept(created), (long) runMultiplier * runConstant);
@@ -89,4 +89,7 @@ public class Main {
         System.out.println(o);
     }
 
+    private static int getRandomInt() {
+        return (int) (Math.random() * Integer.MAX_VALUE);
+    }
 }
