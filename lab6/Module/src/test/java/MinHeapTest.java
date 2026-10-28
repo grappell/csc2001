@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,4 +55,113 @@ public class MinHeapTest {
     //     caller's array is not changed
     //   - a heap built from an array still supports insert (it must grow) and removeMin
     //   - heapSort: empty array, duplicates, negatives, input not changed
+
+    @Test
+    void testRemoveFail() {
+        assertThrows(NoSuchElementException.class, () -> new MinHeap().removeMin());
+    }
+
+    @Test
+    void testEmptyConstructor() {
+        assertThrows(IllegalArgumentException.class, () -> new MinHeap(0));
+    }
+
+    @Test
+    void testPeek() {
+        var h = new MinHeap(new int[]{1, 2, 3, 4});
+        assertEquals(1, h.peek());
+        assertArrayEquals(new int[]{1, 2, 3, 4}, h.toArray());
+    }
+
+    @Test
+    void testInsertMinAndPercolate() {
+        var h = new MinHeap(new int[]{1, 2, 3, 4});
+        h.insert(-1);
+        assertEquals(-1, h.peek());
+    }
+
+    @Test
+    void removeMinSwapsLeft() {
+        var h = new MinHeap(new int[]{1, 2, 2});
+        h.removeMin();
+        assertArrayEquals(new int[]{2, 2}, h.toArray()); // would be {2, 0, 2} for right
+    }
+
+    @Test
+    void testDuplicatesAndNegativesAndGrowth() {
+        var h = new MinHeap(2);
+        var li = new int[]{-10, -20, -190380283};
+        for(int i = 0; i < 10; i++) {
+            h.insert(li[i % li.length]);
+        }
+        assertEquals(10, h.size());
+    }
+
+    @Test
+    void testToArrayNoMutate() {
+        var h = new MinHeap(new int[]{1, 2, 3, 4});
+        h.toArray()[1] = 1000; // attempt to mutate
+        assertArrayEquals(new int[]{1, 2, 3, 4},  h.toArray());
+    }
+
+    @Test
+    void testInsertBasedSorting() {
+        var h = new MinHeap();
+        var truth = new ArrayList<Integer>();
+
+        for(int i = 0; i < 10; i++) {
+            var rand = (int) (Math.random() * Integer.MAX_VALUE - (Integer.MIN_VALUE / 2.0));
+            h.insert(rand);
+            truth.add(rand);
+        }
+
+        var experiment = new ArrayList<Integer>();
+        for(int i = 0; i < 10; i++) {
+            experiment.add(h.removeMin());
+        }
+
+        assertArrayEquals(truth.stream().sorted().toArray(), experiment.toArray());
+    }
+
+    @Test
+    void testArguedConstructor() {
+        assertThrows(IllegalArgumentException.class, () ->  new MinHeap(null));
+        var empty = new MinHeap(new int[0]);
+        var oneVal = new MinHeap(new int[]{1});
+        assertNotEquals(empty.toArray(), oneVal.toArray());
+    }
+
+    @Test
+    void testMutateArguedConstructor() {
+        var input = new int[]{10, 1, 3812, 23};
+        new MinHeap(input);
+        assertArrayEquals(new int[]{10, 1, 3812, 23}, input);
+    }
+
+    @Test
+    void testArguedConstructorSupportsGrowth() {
+        var h = new MinHeap(new int[]{1, 2, 3, 4});
+        for(int i = 0; i < 50; i++) {
+            var rand = (int) (Math.random() * Integer.MAX_VALUE - (Integer.MIN_VALUE / 2.0));
+            h.insert(rand);
+        }
+    }
+
+    @Test
+    void testHeapSortEmpty() {
+        assertThrows(IllegalArgumentException.class, () -> MinHeap.heapSort(null));
+    }
+
+    @Test
+    void testHeapSortDuplicatesAndNegatives() {
+        var h = MinHeap.heapSort(new int[]{-1, -1, -1, -1, -1, -1, -1, -1});
+        assertEquals(8, h.length);
+    }
+
+    @Test
+    void testNoInputMutate() {
+        var input = new int[]{2, 5, 1, 4, -10};
+        var sorted = MinHeap.heapSort(input); // if broken, would mutate the values within
+        assertEquals(Arrays.stream(input).sum(), Arrays.stream(sorted).sum());
+    }
 }

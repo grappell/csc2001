@@ -26,7 +26,7 @@ public class Main {
         printTree(h.toArray());
 
         out(" --- Sort --- ");
-        printTree(MinHeap.heapSort(new int[]{-2, 1, 2, -1, 3}));
+        printTree(MinHeap.heapSort(new int[]{12, 45, 8, 10, 9, 87, 14, -6, -2}));
     }
 
     public static void out(int[] o) {

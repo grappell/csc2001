@@ -133,7 +133,7 @@ public class MinHeap {
     }
 
     private int getParent(int i) {
-        if(i == 1) return -1;
+//        if(i == 1) return -1;
         if(i % 2 == 0) return i / 2;
         return (i - 1) / 2;
     }
@@ -193,6 +193,7 @@ public class MinHeap {
      * throws IllegalArgumentException if values is null
      */
     public static int[] heapSort(int[] values) {
+        if(values == null) throw new IllegalArgumentException("Cannot process null input");
         var sub = new MinHeap(values);
         for(int i = 0; i < values.length; i++) {
             values[i] = sub.removeMin();
