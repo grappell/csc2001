@@ -1,5 +1,10 @@
 import java.io.*;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Project 3: Huffman Encoding / Decoding.
@@ -33,8 +38,20 @@ public class Huffman {
      * the count of each character (0 for characters that do not occur).
      */
     public static int[] cntFreq(String filename) throws IOException {
+
         int[] freq = new int[NUM_CHARS];
-        // TODO: implement
+
+        var path = Path.of(filename);
+
+        Files.readString(path).chars().forEach(c -> freq[c]++);
+
+//        var collected = Files.readString(path).chars()
+//                .mapToObj(c -> (char) c)
+//                .collect(Collectors.groupingBy(c -> c, Collectors.summingInt(e -> 1)));
+//
+//        collected.forEach((ele, count) -> System.out.println("Char: " + ele + " - " + count));
+//        collected.forEach((ele, count) -> freq[ele] = count);
+
         return freq;
     }
 
@@ -49,7 +66,7 @@ public class Huffman {
      * PriorityQueue. How you implement this method depends on which you pick.
      */
     public static void addNode(Collection<HuffmanNode> collection, HuffmanNode node) {
-        // TODO: implement
+        collection.add(node);
     }
 
     /**
@@ -63,8 +80,9 @@ public class Huffman {
      * minimum node and remove it.
      */
     public static HuffmanNode removeMin(Collection<HuffmanNode> collection) {
-        // TODO: implement
-        return null;
+        var remove = collection.stream().sorted().collect(Collectors.toCollection(ArrayList::new)).getFirst();
+        collection.remove(remove);
+        return remove;
     }
 
     /**
@@ -84,8 +102,17 @@ public class Huffman {
      *    character (no combine() call needed).
      */
     public static HuffmanNode createHuffTree(int[] freq) {
-        // TODO: implement
-        return null;
+
+        PriorityQueue<HuffmanNode> queue = new PriorityQueue<>();
+
+        for(int i = 0; i < freq.length; i++) {
+            if(freq[i] == 0) continue;
+            queue.add(new HuffmanNode(i, freq[i]));
+        }
+
+        while(queue.size() > 1) queue.add(HuffmanNode.combine(removeMin(queue), removeMin(queue)));
+
+        return queue.poll();
     }
 
     /**
@@ -103,8 +130,25 @@ public class Huffman {
     public static String[] createCode(HuffmanNode root) {
         String[] codes = new String[NUM_CHARS];
         Arrays.fill(codes, "");
-        // TODO: implement
+        Map<Integer, String> charMap = new HashMap<>();
+        traverseAndBuild(root, charMap, "");
+        charMap.forEach((e, c) -> System.out.println(e + ": " + c));
+        charMap.forEach((e, c) -> codes[e] = c);
         return codes;
+    }
+
+    /**
+     * Preorder traverse of the tree
+     */
+    private static void traverseAndBuild(HuffmanNode root, Map<Integer, String> ans, String current) {
+        if(root == null) return;
+        if(root.isLeaf()) {
+            if(current.isEmpty()) current = "0";
+            ans.put(root.charAscii(), current);
+            return;
+        }
+        traverseAndBuild(root.left(), ans, current + "0");
+        traverseAndBuild(root.left(), ans, current + "1");
     }
 
     /**
@@ -116,8 +160,12 @@ public class Huffman {
      * Example: for the text "aaabbbbcc" this returns "97 3 98 4 99 2".
      */
     public static String createHeader(int[] freq) {
-        // TODO: implement
-        return "";
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < freq.length; i++) {
+            if(freq[i] == 0) continue;
+            sb.append(i).append(" ").append(freq[i]).append(" ");
+        }
+        return sb.toString().trim();
     }
 
     /**
@@ -134,7 +182,15 @@ public class Huffman {
      *    header line (e.g. "97 5") and nothing else - no second line of code bits.
      */
     public static void huffmanEncode(String inFile, String outFile) throws IOException {
-        // TODO: implement
+
+        Path in = Path.of(inFile);
+        Path out = Path.of(outFile);
+        if(!Files.isRegularFile(in)) throw new RuntimeException("Invalid File Provided");
+
+        String header = createHeader(cntFreq(inFile));
+
+        createCode(createHuffTree(cntFreq(inFile)));
+
     }
 
     /**
