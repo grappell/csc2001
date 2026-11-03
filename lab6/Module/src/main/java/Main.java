@@ -6,10 +6,10 @@ public class Main {
     static void main() {
         var h = new MinHeap();
         h.insert(1);
-        h.insert(2);
         h.insert(3);
+        h.insert(2);
+        h.insert(5);
         h.insert(-1);
-        h.insert(-2);
 
         var h2 = new MinHeap(new int[]{-2, 1, 2, -1, 3});
 
@@ -68,7 +68,6 @@ public class Main {
         IntUnaryOperator getCenter = index -> {
             int level = 31 - Integer.numberOfLeadingZeros(index);
             int position = index - (1 << level);
-
             return (int) Math.round((position + 0.5) * width / (1 << level) - 0.5);
         };
 

@@ -162,6 +162,7 @@ public class MinHeapTest {
     void testNoInputMutate() {
         var input = new int[]{2, 5, 1, 4, -10};
         var sorted = MinHeap.heapSort(input); // if broken, would mutate the values within
+        assertArrayEquals(new int[]{2, 5, 1, 4, -10}, input);
         assertEquals(Arrays.stream(input).sum(), Arrays.stream(sorted).sum());
     }
 }

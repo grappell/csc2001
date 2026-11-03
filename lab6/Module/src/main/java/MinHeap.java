@@ -35,6 +35,7 @@ public class MinHeap {
      * Creates an empty heap with room for capacity values before it grows.
      * (The array needs capacity + 1 slots, since index 0 is unused.)
      * throws IllegalArgumentException if capacity is less than 1
+     * Example: new MinHeap(10) // creates with an initial capacity
      */
     public MinHeap(int capacity) {
         if(capacity < 1) throw new IllegalArgumentException("Invalid Capacity");
@@ -46,6 +47,7 @@ public class MinHeap {
      * heap[1] ... heap[n] in the given order, then calls buildHeap().
      * values itself must not be changed. (Make the array exactly big
      * enough: n + 1 slots, but at least 2.)
+     * Example: new MinHeap(new int[] {1, 2, 3, 4});
      * throws IllegalArgumentException if values is null
      */
     public MinHeap(int[] values) {
@@ -60,6 +62,7 @@ public class MinHeap {
      * Adds value to the heap: puts it in the next open spot (index size + 1),
      * then percolates it up until its parent is no larger.
      * Grows the array first if it is full.
+     * Example: h.insert(10) -> mutate heap
      */
     public void insert(int value) {
         if((size + 1) == heap.length) grow();
@@ -77,6 +80,7 @@ public class MinHeap {
      * Removes and returns the smallest value: the last leaf moves to the
      * root, then percolates down until it is no larger than its children.
      * throws NoSuchElementException if the heap is empty
+     * Example: heap.removeMin() -> returns smallest value and mutates heap
      */
     public int removeMin() {
         if(size == 0) throw new NoSuchElementException("Empty");
@@ -89,6 +93,7 @@ public class MinHeap {
     /**
      * Returns the smallest value without removing it.
      * throws NoSuchElementException if the heap is empty
+     * Example: heap.peek() -> 10 // smallest value in heap
      */
     public int peek() {
         if(size == 0) throw new NoSuchElementException("Empty");
@@ -125,6 +130,7 @@ public class MinHeap {
     /**
      * Moves the value at index i up while it is smaller than its parent.
      * (Stop when it reaches the root or its parent is <= it.)
+     * Example: this.percolateUp(10) -> mutates heap // given you inserted a new leaft at index 10
      */
     private void percolateUp(int i) {
         for(int active = i; active != 1 && heap[getParent(active)] > heap[active]; active = getParent(active)) {
@@ -132,8 +138,11 @@ public class MinHeap {
         }
     }
 
+    /**
+     * Get the parent of a node
+     * Example: getParent(2) -> 1
+     */
     private int getParent(int i) {
-//        if(i == 1) return -1;
         if(i % 2 == 0) return i / 2;
         return (i - 1) / 2;
     }
@@ -142,6 +151,7 @@ public class MinHeap {
      * Moves the value at index i down, always swapping with the smaller
      * child (the LEFT child if both children are equal), until it is no
      * larger than its children or reaches a leaf.
+     * Example: this.percolateDown(0) // given you just added a node at the head
      */
     private void percolateDown(int i) {
         var active = i;
@@ -162,6 +172,7 @@ public class MinHeap {
     /**
      * Exchanges heap[a] and heap[b].
      * a and b are the indices of the values to swap
+     * Example: a -> 5, b -> 3 ; swap(a, b) ; a -> 3, b -> 5
      */
     private void swap(int a, int b) {
         var temp = heap[b];
@@ -169,7 +180,9 @@ public class MinHeap {
         heap[a] = temp;
     }
 
-    /** Doubles the array's capacity, keeping every value at the same index. */
+    /** Doubles the array's capacity, keeping every value at the same index.
+     *  Example: this.grow(); // doubles capacity
+     */
     private void grow() {
         var temp = new int[heap.length * 2];
         System.arraycopy(heap, 0, temp, 0, heap.length);
@@ -181,6 +194,7 @@ public class MinHeap {
      * Restores heap order over heap[1] ... heap[size] by percolating down
      * each non-leaf node, starting at the last one (index size / 2) and
      * working back to the root (index 1).
+     * Exmple: this.buildHeap() -> mutates internal stack array
      */
     private void buildHeap() {
         for (int i = size / 2; i >= 1; i--) percolateDown(i);
@@ -191,9 +205,11 @@ public class MinHeap {
      * MinHeap from values with the MinHeap(int[]) constructor, then calls
      * removeMin() repeatedly. values itself must not be changed.
      * throws IllegalArgumentException if values is null
+     * Example: MinHeap.sort(1 3 2 5 -1) -> -1 1 2 5 3
      */
     public static int[] heapSort(int[] values) {
         if(values == null) throw new IllegalArgumentException("Cannot process null input");
+        values = Arrays.copyOf(values, values.length);
         var sub = new MinHeap(values);
         for(int i = 0; i < values.length; i++) {
             values[i] = sub.removeMin();

@@ -80,9 +80,11 @@ public class Huffman {
      * minimum node and remove it.
      */
     public static HuffmanNode removeMin(Collection<HuffmanNode> collection) {
-        var remove = collection.stream().sorted().collect(Collectors.toCollection(ArrayList::new)).getFirst();
-        collection.remove(remove);
-        return remove;
+        if(collection instanceof PriorityQueue<HuffmanNode> pq) return pq.poll();
+        HuffmanNode min = collection.stream().min(HuffmanNode::compareTo).orElse(null);
+
+        if(min != null) collection.remove(min);
+        return min;
     }
 
     /**
@@ -185,11 +187,12 @@ public class Huffman {
 
         Path in = Path.of(inFile);
         Path out = Path.of(outFile);
+
         if(!Files.isRegularFile(in)) throw new RuntimeException("Invalid File Provided");
 
-        String header = createHeader(cntFreq(inFile));
-
-        createCode(createHuffTree(cntFreq(inFile)));
+        var freq = cntFreq(inFile);
+        String header = createHeader(freq);
+        createCode(createHuffTree(freq));
 
     }
 
