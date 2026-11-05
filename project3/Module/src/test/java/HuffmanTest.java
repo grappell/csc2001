@@ -3,6 +3,10 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,10 +42,86 @@ public class HuffmanTest {
         assertEquals("97 2 98 4 99 8 100 16 102 2", Huffman.createHeader(freqList));
     }
 
+    private void testEncode(String name) throws IOException{
+        Huffman.huffmanEncode(root + name + ".txt", root + name + "_out.txt");
+        betterCompare(root + name + "_out.txt", root + name + "_soln.txt");
+        assertTrue(compareFiles(root + name + "_out.txt", root + name + "_soln.txt"));
+    }
+
     @Test
-    public void test01Textfile() throws IOException {
-        Huffman.huffmanEncode(root + "file1.txt", root + "file1_out.txt");
-        assertTrue(compareFiles(root + "file1_out.txt", root + "file1_soln.txt"));
+    public void test01Encode() throws IOException {
+        testEncode("file1");
+    }
+
+    @Test
+    public void test02Encode() throws IOException {
+        testEncode("file2");
+    }
+
+    @Test
+    public void test03Encode() throws IOException {
+        testEncode("file3");
+    }
+
+    @Test
+    public void testMultiLineEncode() throws IOException {
+        testEncode("multiline");
+    }
+
+    private void testDecode(String name) throws IOException {
+//        Huffman.huffmanDecode(root + name + "_soln.txt", root + name + "_dec.txt");
+        Huffman.huffmanDecode(root + name + "_out.txt", root + name + "_dec.txt");
+        assertTrue(compareFiles(root + name + "_dec.txt", root + name + ".txt"));
+    }
+
+    @Test
+    public void testDecodeFile1() throws IOException {
+        testDecode("file1");
+    }
+
+    @Test
+    public void testDecodeFile2() throws IOException {
+        testDecode("file2");
+    }
+
+    @Test
+    public void testDecodeFile3() throws IOException {
+        testDecode("file3");
+    }
+
+    @Test
+    public void testDecodeFileMultiline() throws IOException {
+        testDecode("multiline");
+    }
+
+    private static void betterCompare(String a, String b) throws IOException {
+
+        Path og = Path.of(a);
+        Path dec = Path.of(b);
+        byte[] original = Files.readAllBytes(og);
+        byte[] decoded = Files.readAllBytes(dec);
+
+        for (int i = 0; i < Math.min(original.length, decoded.length); i++) {
+            if (original[i] != decoded[i]) {
+                System.out.println("Mismatch at index: " + i);
+
+                System.out.println("Expected: " + (char) original[i]);
+                System.out.println("Actual: " + (char) decoded[i]);
+
+                System.out.println("Original context: " +
+                        new String(original, Math.max(0, i - 5),
+                                Math.min(11, original.length - Math.max(0, i - 5))));
+
+                System.out.println("Decoded context: " +
+                        new String(decoded, Math.max(0, i - 5),
+                                Math.min(11, decoded.length - Math.max(0, i - 5))));
+
+                break;
+            }
+        }
+
+        assertArrayEquals(Files.readAllBytes(og), Files.readAllBytes(dec));
+
     }
 
     /**

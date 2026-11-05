@@ -3,6 +3,9 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileAttribute;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,7 +85,6 @@ public class Huffman {
     public static HuffmanNode removeMin(Collection<HuffmanNode> collection) {
         if(collection instanceof PriorityQueue<HuffmanNode> pq) return pq.poll();
         HuffmanNode min = collection.stream().min(HuffmanNode::compareTo).orElse(null);
-
         if(min != null) collection.remove(min);
         return min;
     }
@@ -109,11 +111,11 @@ public class Huffman {
 
         for(int i = 0; i < freq.length; i++) {
             if(freq[i] == 0) continue;
-            queue.add(new HuffmanNode(i, freq[i]));
+            addNode(queue, new HuffmanNode(i, freq[i]));
         }
 
+        if(queue.isEmpty()) return null;
         while(queue.size() > 1) queue.add(HuffmanNode.combine(removeMin(queue), removeMin(queue)));
-
         return queue.poll();
     }
 
@@ -134,7 +136,7 @@ public class Huffman {
         Arrays.fill(codes, "");
         Map<Integer, String> charMap = new HashMap<>();
         traverseAndBuild(root, charMap, "");
-        charMap.forEach((e, c) -> System.out.println(e + ": " + c));
+        // charMap.forEach((e, c) -> System.out.println(e + ": " + c)); // Debugging
         charMap.forEach((e, c) -> codes[e] = c);
         return codes;
     }
@@ -150,7 +152,7 @@ public class Huffman {
             return;
         }
         traverseAndBuild(root.left(), ans, current + "0");
-        traverseAndBuild(root.left(), ans, current + "1");
+        traverseAndBuild(root.right(), ans, current + "1");
     }
 
     /**
@@ -190,9 +192,30 @@ public class Huffman {
 
         if(!Files.isRegularFile(in)) throw new RuntimeException("Invalid File Provided");
 
-        var freq = cntFreq(inFile);
+        // Empty file special case
+        if(Files.readString(in).isEmpty()) {
+            Files.createFile(out);
+            return;
+        }
+
+        int[] freq = cntFreq(inFile);
         String header = createHeader(freq);
-        createCode(createHuffTree(freq));
+        HuffmanNode tree = createHuffTree(freq);
+        String[] code = createCode(tree);
+
+        try (var writer = Files.newBufferedWriter(out, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)) {
+
+            writer.write(header);
+
+            // Only write header for 1 char frequency tables, witch are formatted ASCII FREQ. Append newline if writing encoding
+            if(tree.isLeaf()) return;
+            else writer.write("\n");
+
+            // Read in all characters
+            for(var c: Files.readString(in).chars().toArray()) {
+                writer.append(code[c]);
+            }
+        }
 
     }
 
@@ -205,7 +228,8 @@ public class Huffman {
      */
     public static int[] parseHeader(String headerString) {
         int[] freq = new int[NUM_CHARS];
-        // TODO: implement
+        var split = Arrays.stream(headerString.split(" ")).mapToInt(Integer::parseInt).toArray();
+        for(int i = 0; i < split.length; i += 2) freq[split[i]] = split[i + 1];
         return freq;
     }
 
@@ -225,6 +249,41 @@ public class Huffman {
      * so write it out that many times directly.
      */
     public static void huffmanDecode(String encodedFile, String decodeFile) throws IOException {
-        // TODO: implement
+
+        Path in = Path.of(encodedFile);
+        Path out = Path.of(decodeFile);
+        if(!Files.isRegularFile(in)) throw new RuntimeException("Invalid File Provided");
+
+        String[] lines = Files.readAllLines(in).toArray(String[]::new);
+        var freq = parseHeader(lines[0]);
+        var bits = lines.length > 1 ? lines[1] : "";
+        var tree = createHuffTree(freq);
+
+        createCode(tree);
+
+        StringBuilder bldr = new StringBuilder();
+        var current = tree;
+
+        if(current.isLeaf()) {
+            int count = freq[current.charAscii()];
+            bldr.repeat(current.charAscii(), count);
+        }
+
+        for(int i = 0; i < bits.length(); i++) {
+
+            if(bits.charAt(i) == '0') current = current.left();
+            else current = current.right();
+
+            if(current.isLeaf()) {
+                bldr.append((char) current.charAscii());
+                current = tree;
+            }
+
+        }
+
+        try (var writer = Files.newBufferedWriter(out, StandardOpenOption.CREATE)) {
+            writer.write(bldr.toString());
+            writer.flush();
+        }
     }
 }
