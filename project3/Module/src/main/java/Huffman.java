@@ -1,9 +1,6 @@
 import java.io.*;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
 import java.util.*;
@@ -114,7 +111,6 @@ public class Huffman {
             addNode(queue, new HuffmanNode(i, freq[i]));
         }
 
-        if(queue.isEmpty()) return null;
         while(queue.size() > 1) queue.add(HuffmanNode.combine(removeMin(queue), removeMin(queue)));
         return queue.poll();
     }
@@ -194,7 +190,7 @@ public class Huffman {
 
         // Empty file special case
         if(Files.readString(in).isEmpty()) {
-            Files.createFile(out);
+            Files.write(out, new byte[]{}, StandardOpenOption.CREATE);
             return;
         }
 
@@ -253,6 +249,11 @@ public class Huffman {
         Path in = Path.of(encodedFile);
         Path out = Path.of(decodeFile);
         if(!Files.isRegularFile(in)) throw new RuntimeException("Invalid File Provided");
+
+        if(Files.readString(in).isEmpty()) {
+            Files.write(out, new byte[]{}, StandardOpenOption.CREATE);
+            return;
+        }
 
         String[] lines = Files.readAllLines(in).toArray(String[]::new);
         var freq = parseHeader(lines[0]);

@@ -48,6 +48,23 @@ public class HuffmanTest {
         assertTrue(compareFiles(root + name + "_out.txt", root + name + "_soln.txt"));
     }
 
+//    @Test
+//    public void testAllTextFiles() throws IOException {
+//        try(var stream = Files.newDirectoryStream(Path.of(root))) {
+//            stream.forEach(e -> {
+//                var name = e.toFile().getName();
+//                if(name.substring(name.length() - 3).equals(".txt")) {
+//                    try {
+//                        testEncode(name);
+//                        testDecode(name);
+//                    } catch (IOException ex) {
+//                        throw new RuntimeException(ex);
+//                    }
+//                }
+//            });
+//        }
+//    }
+
     @Test
     public void test01Encode() throws IOException {
         testEncode("file1");
@@ -61,6 +78,16 @@ public class HuffmanTest {
     @Test
     public void test03Encode() throws IOException {
         testEncode("file3");
+    }
+
+    @Test
+    public void test04Encode() throws IOException {
+        testEncode("file4");
+    }
+
+    @Test
+    public void test05Encode() throws IOException {
+        testEncode("file5");
     }
 
     @Test
@@ -90,6 +117,16 @@ public class HuffmanTest {
     }
 
     @Test
+    public void testDecodeFile4() throws IOException {
+        testDecode("file4");
+    }
+
+    @Test
+    public void testDecodeFile5() throws IOException {
+        testDecode("file5");
+    }
+
+    @Test
     public void testDecodeFileMultiline() throws IOException {
         testDecode("multiline");
     }
@@ -103,18 +140,14 @@ public class HuffmanTest {
 
         for (int i = 0; i < Math.min(original.length, decoded.length); i++) {
             if (original[i] != decoded[i]) {
+
                 System.out.println("Mismatch at index: " + i);
 
-                System.out.println("Expected: " + (char) original[i]);
-                System.out.println("Actual: " + (char) decoded[i]);
+                System.out.println(" > Expected: " + (char) original[i]);
+                System.out.println(" > Actual: " + (char) decoded[i]);
 
-                System.out.println("Original context: " +
-                        new String(original, Math.max(0, i - 5),
-                                Math.min(11, original.length - Math.max(0, i - 5))));
-
-                System.out.println("Decoded context: " +
-                        new String(decoded, Math.max(0, i - 5),
-                                Math.min(11, decoded.length - Math.max(0, i - 5))));
+                System.out.println("Original context: " + new String(original, Math.max(0, i - 5), Math.min(11, original.length - Math.max(0, i - 5))));
+                System.out.println("Decoded context: " + new String(decoded, Math.max(0, i - 5), Math.min(11, decoded.length - Math.max(0, i - 5))));
 
                 break;
             }
