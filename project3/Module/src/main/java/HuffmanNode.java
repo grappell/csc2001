@@ -1,5 +1,3 @@
-    import java.util.Comparator;
-
     /**
      * A single node in a Huffman tree, implemented as a record.
      *

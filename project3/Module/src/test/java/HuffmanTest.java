@@ -1,12 +1,12 @@
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.stream.IntStream;
+import java.nio.file.*;
+import java.nio.file.attribute.*;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -129,6 +129,113 @@ public class HuffmanTest {
     @Test
     public void testDecodeFileMultiline() throws IOException {
         testDecode("multiline");
+    }
+
+    @Test
+    public void testUnreadable() throws IOException {
+
+        var in = Path.of(root + "unreadable.txt");
+
+        makeUnreadable(in);
+        assertThrows(AccessDeniedException.class, () -> testEncode("unreadable"));
+        makeReadable(in);
+
+        Huffman.huffmanEncode(root + "unreadable.txt", root + "unreadable_out.txt");
+        var out = Path.of(root + "unreadable_out.txt");
+
+        makeUnreadable(out);
+        assertThrows(AccessDeniedException.class, () -> testDecode("unreadable"));
+        makeReadable(out);
+
+    }
+
+    private static void makeUnreadable(Path p) throws IOException {
+        FileStore store = Files.getFileStore(p);
+        if (store.supportsFileAttributeView(AclFileAttributeView.class)) {
+            AclFileAttributeView view = Files.getFileAttributeView(p, AclFileAttributeView.class);
+            view.setAcl(Collections.emptyList());
+        } else if (store.supportsFileAttributeView(PosixFileAttributeView.class)) {
+            Files.setPosixFilePermissions(p, EnumSet.complementOf(EnumSet.of(PosixFilePermission.GROUP_READ, PosixFilePermission.OWNER_READ)));
+        }
+    }
+
+    private static void makeReadable(Path p) throws IOException {
+
+        FileStore store = Files.getFileStore(p);
+
+        UserPrincipal user = p.getFileSystem().getUserPrincipalLookupService().lookupPrincipalByName(System.getProperty("user.name"));
+        AclFileAttributeView view = Files.getFileAttributeView(p, AclFileAttributeView.class);
+
+        System.out.println("VIEW: " + view.name());
+
+        AclEntry entry = AclEntry.newBuilder()
+                .setType(AclEntryType.ALLOW)
+                .setPrincipal(user)
+                .setPermissions(EnumSet.allOf(AclEntryPermission.class))
+                .build();
+
+
+        if (store.supportsFileAttributeView(AclFileAttributeView.class)) {
+            List<AclEntry> acl = view.getAcl();
+            acl.addFirst(entry); // Best practice: insert before DENY entries if applicable
+            view.setAcl(acl);
+        } else if (store.supportsFileAttributeView(PosixFileAttributeView.class)) {
+            Files.setPosixFilePermissions(p, EnumSet.allOf(PosixFilePermission.class));
+        }
+    }
+
+    @Test
+    public void testRemoveMin() {
+
+        var min = new HuffmanNode(72, 1);
+
+        List<HuffmanNode> nodes = List.of(
+                new HuffmanNode(1,  10),
+                new HuffmanNode(4,  100),
+                min,
+                new HuffmanNode(3,  32)
+        );
+
+        List<Collection<HuffmanNode>> li = List.of(
+                new ArrayList<>(nodes),
+                new PriorityQueue<>(nodes),
+                new HashSet<>(nodes)
+        );
+
+        li.forEach(e -> assertEquals(min, Huffman.removeMin(e)));
+        assertNull(Huffman.removeMin(new ArrayList<>()));
+
+    }
+
+    @Test
+    public void testNullTraverseAndBuild() {
+        var strs = new String[Huffman.NUM_CHARS];
+        Arrays.fill(strs, "");
+        assertArrayEquals(strs, Huffman.createCode(null));
+    }
+
+    @Test
+    public void testLeaf() {
+        assertTrue(new HuffmanNode(1, 1).isLeaf());
+        assertFalse(new HuffmanNode(1, 1, new HuffmanNode(1, 2), new HuffmanNode(1, 1)).isLeaf());
+        assertFalse(new HuffmanNode(1, 1, new HuffmanNode(1, 2), null).isLeaf());
+        assertFalse(new HuffmanNode(1, 1, null, new HuffmanNode(1, 2)).isLeaf());
+    }
+
+    @Test
+    public void testCombine() {
+        HuffmanNode a = new HuffmanNode(1, 2);
+        HuffmanNode b = new HuffmanNode(2, 1);
+        assertEquals(HuffmanNode.combine(a, b), HuffmanNode.combine(b, a));
+    }
+
+    @Test
+    public void testCompareTo() {
+        HuffmanNode a = new HuffmanNode(1, 2);
+        HuffmanNode b = new HuffmanNode(2, 1);
+        assertTrue(a.compareTo(b) > 0);
+        assertTrue(b.compareTo(a) < 0);
+        assertEquals(0, a.compareTo(a));
     }
 
     private static void betterCompare(String a, String b) throws IOException {

@@ -113,6 +113,7 @@ public class Huffman {
 
         while(queue.size() > 1) queue.add(HuffmanNode.combine(removeMin(queue), removeMin(queue)));
         return queue.poll();
+
     }
 
     /**
@@ -130,8 +131,10 @@ public class Huffman {
     public static String[] createCode(HuffmanNode root) {
         String[] codes = new String[NUM_CHARS];
         Arrays.fill(codes, "");
+
         Map<Integer, String> charMap = new HashMap<>();
         traverseAndBuild(root, charMap, "");
+
         // charMap.forEach((e, c) -> System.out.println(e + ": " + c)); // Debugging
         charMap.forEach((e, c) -> codes[e] = c);
         return codes;
@@ -186,7 +189,7 @@ public class Huffman {
         Path in = Path.of(inFile);
         Path out = Path.of(outFile);
 
-        if(!Files.isRegularFile(in)) throw new RuntimeException("Invalid File Provided");
+        if(!Files.isReadable(in)) throw new AccessDeniedException("Invalid File Provided");
 
         // Empty file special case
         if(Files.readString(in).isEmpty()) {
@@ -211,6 +214,7 @@ public class Huffman {
             for(var c: Files.readString(in).chars().toArray()) {
                 writer.append(code[c]);
             }
+
         }
 
     }
@@ -248,7 +252,8 @@ public class Huffman {
 
         Path in = Path.of(encodedFile);
         Path out = Path.of(decodeFile);
-        if(!Files.isRegularFile(in)) throw new RuntimeException("Invalid File Provided");
+
+        if(!Files.isReadable(in)) throw new AccessDeniedException("Invalid File Provided");
 
         if(Files.readString(in).isEmpty()) {
             Files.write(out, new byte[]{}, StandardOpenOption.CREATE);
