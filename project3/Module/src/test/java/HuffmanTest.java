@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class HuffmanTest {
 
-    private static final String root = "./src/main/java/";
+    private static final String root = "./src/main/java/text/";
 
     @Test
     public void testCntFreq() throws IOException {
