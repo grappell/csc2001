@@ -42,7 +42,8 @@
         public static HuffmanNode combine(HuffmanNode a, HuffmanNode b) {
             var smallest = comesBefore(a, b) ? a : b;
             var largest = comesBefore(a, b) ? b : a;
-            return new HuffmanNode(smallest.charAscii, a.freq + b.freq, smallest, largest);
+            var smallestAscii = Math.min(a.charAscii, b.charAscii);
+            return new HuffmanNode(smallestAscii, a.freq + b.freq, smallest, largest);
         }
 
         /**

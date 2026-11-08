@@ -91,13 +91,19 @@ public class HuffmanTest {
     }
 
     @Test
+    public void test06Encode() throws IOException {
+        testEncode("file6");
+    }
+
+
+    @Test
     public void testMultiLineEncode() throws IOException {
         testEncode("multiline");
     }
 
     private void testDecode(String name) throws IOException {
-//        Huffman.huffmanDecode(root + name + "_soln.txt", root + name + "_dec.txt");
-        Huffman.huffmanDecode(root + name + "_out.txt", root + name + "_dec.txt");
+        Huffman.huffmanDecode(root + name + "_soln.txt", root + name + "_dec.txt");
+//        Huffman.huffmanDecode(root + name + "_out.txt", root + name + "_dec.txt");
         assertTrue(compareFiles(root + name + "_dec.txt", root + name + ".txt"));
     }
 
@@ -124,6 +130,11 @@ public class HuffmanTest {
     @Test
     public void testDecodeFile5() throws IOException {
         testDecode("file5");
+    }
+
+    @Test
+    public void testDecodeFile6() throws IOException {
+        testDecode("file6");
     }
 
     @Test
@@ -192,8 +203,8 @@ public class HuffmanTest {
         List<HuffmanNode> nodes = List.of(
                 new HuffmanNode(1,  10),
                 new HuffmanNode(4,  100),
-                min,
-                new HuffmanNode(3,  32)
+                new HuffmanNode(3,  32),
+                min
         );
 
         List<Collection<HuffmanNode>> li = List.of(
