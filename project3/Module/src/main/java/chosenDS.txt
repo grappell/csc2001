@@ -1,0 +1,15 @@
+How expensive is it to pull out the minimum node with each approach? How expensive is it to add a newly-combined internal node back in?
+> With a PriorityQueue, getting the top node is very easy. It's O(1) to peek, and O(long n) when removing to shuffle the background tree to keep it in order.
+> An ordered list is O(n) to add and remove, due to having to copy elements. Adding a new node is also 0(log n) on the priority queue as you have to insert and percolate.
+
+Does the cost of building the initial collection of leaf nodes differ between the two approaches?
+> Yes. With a PriorityQueue, inserting all the initial leaf nodes individually takes O(n log n), as each insertion may have to percolate through the heap. With an ordered list,
+> inserting each node into its correct sorted position can take O(n), leading to O(n²) overall.
+
+Roughly how many times will you remove-the-minimum and add-a-node over the course of building a tree with ‘n’ unique characters? How does that interact with the per-operation cost of each data structure?
+> We have to remove 2(n − 1) nodes and add (n − 1) combined nodes, as each combination removes two nodes and adds one back. This means that we would prefer
+> a data structure is better at removal than addition.
+
+If two nodes have equal occurrence counts, does your chosen data structure make it easy or awkward to break the tie the way comesBefore specifies?
+> A PriorityQueue makes breaking ties relatively easy, as we can use a Comparator that follows the comesBefore rules. It first compares occurrence counts, and if they're equal, it compares
+> the ASCII values. The heap then automatically maintains this ordering when inserting and removing nodes, without needing us to manually sort or shift elements like an ordered list.

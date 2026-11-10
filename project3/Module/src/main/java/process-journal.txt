@@ -1,0 +1,19 @@
+Oct 28, 2026 ------
+Import given files for the project. Start on HuffmanNode. No problems encountered
+
+Nov 2, 2026 ------
+Start working on the main Huffman algorithm. Complete the frequency tables, header, tree, and the remove
+and add functions. Started on the main encoding file. No problems encountered.
+
+Nov 4, 2026 ------
+Fill out the rest of the Huffman algorithm. Encountered huge problem when running multiline. For some reason
+ony that file fails encoding and decoding. On top of that, decoding my encoded version of that file is valid,
+but decoding the solution file returns gibberish. Spent 2 hours here, and I cannot find where it went wrong.
+
+Nov 5, 2026 ------
+Fill out the rest of the tests, regardless of the encoding / decoding bug. No new problems encountered. Spent
+a lot of time on making unreadable and unwritable files to test the one edge case in the encode and decode methods.
+
+Nov 7, 2026 ------
+Fix to encode and decode finally found. Instead of taking the minimum of the two ascii values, I took the ascii
+value of the smaller node when comparing the two. Life got a lot better.

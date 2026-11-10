@@ -103,7 +103,6 @@ public class HuffmanTest {
 
     private void testDecode(String name) throws IOException {
         Huffman.huffmanDecode(root + name + "_soln.txt", root + name + "_dec.txt");
-//        Huffman.huffmanDecode(root + name + "_out.txt", root + name + "_dec.txt");
         assertTrue(compareFiles(root + name + "_dec.txt", root + name + ".txt"));
     }
 
