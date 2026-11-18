@@ -1,0 +1,63 @@
+ ----------- For 1000 elements -----------
+Insertion Sort (Unsorted): 255937 comparisons in 0.0022356 seconds
+Insertion Sort (Sorted): 0 comparisons in 2.71E-5 seconds
+Merge Sort (Unsorted): 8700 comparisons in 0.0126056 seconds
+Merge Sort (Sorted): 5044 comparisons in 0.0026056 seconds
+Quick Sort (Unsorted): N/A comparisons in 3.322E-4 seconds
+Quick Sort (Sorted): N/A comparisons in 2.32E-5 seconds
+
+ ----------- For 2000 elements -----------
+Insertion Sort (Unsorted): 1022343 comparisons in 0.0046749 seconds
+Insertion Sort (Sorted): 0 comparisons in 1.07E-4 seconds
+Merge Sort (Unsorted): 19426 comparisons in 0.0038207 seconds
+Merge Sort (Sorted): 11088 comparisons in 0.0036477 seconds
+Quick Sort (Unsorted): N/A comparisons in 2.846E-4 seconds
+Quick Sort (Sorted): N/A comparisons in 3.68E-5 seconds
+
+ ----------- For 4000 elements -----------
+Insertion Sort (Unsorted): 4019969 comparisons in 0.0022084 seconds
+Insertion Sort (Sorted): 0 comparisons in 4.39E-5 seconds
+Merge Sort (Unsorted): 42851 comparisons in 0.0068551 seconds
+Merge Sort (Sorted): 24176 comparisons in 0.0054777 seconds
+Quick Sort (Unsorted): N/A comparisons in 2.328E-4 seconds
+Quick Sort (Sorted): N/A comparisons in 6.55E-5 seconds
+
+ ----------- For 8000 elements -----------
+Insertion Sort (Unsorted): 15985358 comparisons in 0.0026657 seconds
+Insertion Sort (Sorted): 0 comparisons in 9.3E-6 seconds
+Merge Sort (Unsorted): 93647 comparisons in 0.0143372 seconds
+Merge Sort (Sorted): 52352 comparisons in 0.0117876 seconds
+Quick Sort (Unsorted): N/A comparisons in 3.543E-4 seconds
+Quick Sort (Sorted): N/A comparisons in 1.2E-4 seconds
+
+ ----------- For 16000 elements -----------
+Insertion Sort (Unsorted): 63809011 comparisons in 0.01111 seconds
+Insertion Sort (Sorted): 0 comparisons in 1.6E-5 seconds
+Merge Sort (Unsorted): 203163 comparisons in 0.013617 seconds
+Merge Sort (Sorted): 112704 comparisons in 0.0106725 seconds
+Quick Sort (Unsorted): N/A comparisons in 0.0012372 seconds
+Quick Sort (Sorted): N/A comparisons in 2.106E-4 seconds
+
+ ----------- For 32000 elements -----------
+Insertion Sort (Unsorted): 256633222 comparisons in 0.0482373 seconds
+Insertion Sort (Sorted): 0 comparisons in 2.96E-5 seconds
+Merge Sort (Unsorted): 438700 comparisons in 0.0529537 seconds
+Merge Sort (Sorted): 241408 comparisons in 0.0275964 seconds
+Quick Sort (Unsorted): N/A comparisons in 0.0024642 seconds
+Quick Sort (Sorted): N/A comparisons in 8.828E-4 seconds
+
+ ----------- For 100000 elements -----------
+Insertion Sort (Unsorted): 2495854353 comparisons in 0.4556353 seconds
+Insertion Sort (Sorted): 0 comparisons in 8.11E-5 seconds
+Merge Sort (Unsorted): 1536195 comparisons in 0.3053706 seconds
+Merge Sort (Sorted): 853904 comparisons in 0.187105 seconds
+Quick Sort (Unsorted): N/A comparisons in 0.0044605 seconds
+Quick Sort (Sorted): N/A comparisons in 1.203E-4 seconds
+
+ ----------- For 500000 elements -----------
+Insertion Sort (Unsorted): 62518408118 comparisons in 11.2593729 seconds
+Insertion Sort (Sorted): 0 comparisons in 3.993E-4 seconds
+Merge Sort (Unsorted): 8837387 comparisons in 5.2099517 seconds
+Merge Sort (Sorted): 4783216 comparisons in 2.4849258 seconds
+Quick Sort (Unsorted): N/A comparisons in 0.0212761 seconds
+Quick Sort (Sorted): N/A comparisons in 6.81E-5 seconds
